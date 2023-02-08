@@ -62,118 +62,42 @@
 		</nav>
 	</div>
 
-
 	<div class="container">
-		<h1>Shopme Control Panel</h1>
+		<h2>Manage Users</h2>
+		<a th:href="@{/users/new}" class = "btn btn-primary btn-sm mb-3">Create New User</a>
+		<table class="table table-bordered table-striped table-hover table-responsive-xl">
+			<thead class="thead-dark">
+				<tr>
+					<th>User ID</th>
+					<th>Photos</th>
+					<th>E-mail</th>
+					<th>First Name</th>
+					<th>Last Name</th>
+					<th>Roles</th>
+					<th>enabled</th>
+					<th>Eite</th>
+				</tr>
+			</thead>
+			<tbdoy>
+				<tr th:each="user : ${UserAll}">
+					<td>[[${user.id}]]</td>
+					<td>[[${user.photos}]]</td>
+					<td>[[${user.email}]]</td>
+					<td>[[${user.firstname}]]></td>
+					<td>[[${user.lastname}]]</td>
+					<td><p th:text="${user.roles}"></td>
+					<td><p th:text="${user.enabled}"></td>
+					<td>Edit &nbsp; Delete</span></td>
+				</tr>
+			</tbdoy>
+		</table>
 	</div>
-
-
-	<script>
-		function includeHTML() {
-			let z, elmnt, file, xhttp;
-
-			z = document.getElementsByTagName("*");
-
-			for (let i = 0; i < z.length; i++) {
-				elmnt = z[i];
-				file = elmnt.getAttribute("data-include");
-
-				if (file) {
-					xhttp = new XMLHttpRequest();
-					xhttp.onreadystatechange = function () {
-						if (this.readyState == 4) {
-							if (this.status == 200) {elmnt.innerHTML = this.responseText;}
-							if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
-							/* Remove the attribute, and call this function once more: */
-							elmnt.removeAttribute("data-include");
-							includeHTML();
-						}//if
-					}//onreadystatechange
-
-					xhttp.open("GET", file, true);
-					xhttp.send();
-					return;
-				}//if - file
-			}//for
-		}//includeHTML
-
-
-		/* ✨ 실행 */
-		window.addEventListener('DOMContentLoaded', () => {
-			includeHTML();
-		});
-	</script>
-
-	<header data-include="./header.html"></header>
-
-	
-<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-<script type="text/javascript">
-$(document).ready( function() {
-
-$("#headers").load("header.html"); // 원하는 파일 경로를 삽입하면 된다
-
-
-});
-</script>
-
-
-
-
-
-	
-<div id="headers"></div>
-
-
-
-
-<!DOCTYPE html>
-
-<html>
-
-<head>
-
-<!-- 
-
-제일먼저 Jquery를 import한다. 로컬에 다운받은게 있으면 src부분에 경로지정해 주면 된다.
-
-Jquery버전은 상관없다.
-
--->
-
-<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-
-<script type="text/javascript">
-
-//페이지가 로드되면 실행한다.
-
-$(document).ready( function() {
-
-	$("#contents").load("header.html");
-
-	//~이렇게 한줄만 해주면 알아서 contents에 testContents.html파일을 넣어 준다.
-
-});
-
-</script>
-
-</head>
-
-<body>
-
-
-
-<div id="contents"/>
-
-</body>
-
-</html>
-
 
 
 	<footer class="my-3 text-center">
 		<p>Shopme Control Panel - Copyright &copy; Shope</p>
 	</footer>
+
 
 </body>
 

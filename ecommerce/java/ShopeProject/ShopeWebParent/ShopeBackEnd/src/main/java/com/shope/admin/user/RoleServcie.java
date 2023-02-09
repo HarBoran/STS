@@ -6,14 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shope.common.entity.Role;
+import com.shope.common.entity.User;
 
 @Service
 public class RoleServcie {
 	
 	@Autowired
-	private RoleRepository repo;
+	private RoleRepository roleRepo;
 	
 	public List<Role> listAll() {
-		return  (List<Role>) repo.findAll();
+		return  (List<Role>) roleRepo.findAll();
 	}
+
+//	public User FindOne(String email) {
+//		return repo.findOne(email);
+//	}
 }

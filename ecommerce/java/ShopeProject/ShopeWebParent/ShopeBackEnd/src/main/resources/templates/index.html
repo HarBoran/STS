@@ -16,7 +16,7 @@
 	<div>
 		<nav class="navbar navbar-expand-lg bg-dark navbar-dark">
 			<a class="navbar-brand" th:href="@{/}">
-				<img th:src="@{/images/ShopeAdminSmall.png}" style="width:100px; height:100px;" />
+				<img th:src="@{/images/ShopeAdminSmall.png}" style="width:150px; height:150px;" />
 			</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
 				<span class="navbar-toggler-icon"></span>
@@ -66,109 +66,6 @@
 	<div class="container">
 		<h1>Shopme Control Panel</h1>
 	</div>
-
-
-	<script>
-		function includeHTML() {
-			let z, elmnt, file, xhttp;
-
-			z = document.getElementsByTagName("*");
-
-			for (let i = 0; i < z.length; i++) {
-				elmnt = z[i];
-				file = elmnt.getAttribute("data-include");
-
-				if (file) {
-					xhttp = new XMLHttpRequest();
-					xhttp.onreadystatechange = function () {
-						if (this.readyState == 4) {
-							if (this.status == 200) {elmnt.innerHTML = this.responseText;}
-							if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
-							/* Remove the attribute, and call this function once more: */
-							elmnt.removeAttribute("data-include");
-							includeHTML();
-						}//if
-					}//onreadystatechange
-
-					xhttp.open("GET", file, true);
-					xhttp.send();
-					return;
-				}//if - file
-			}//for
-		}//includeHTML
-
-
-		/* ✨ 실행 */
-		window.addEventListener('DOMContentLoaded', () => {
-			includeHTML();
-		});
-	</script>
-
-	<header data-include="./header.html"></header>
-
-	
-<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-<script type="text/javascript">
-$(document).ready( function() {
-
-$("#headers").load("header.html"); // 원하는 파일 경로를 삽입하면 된다
-
-
-});
-</script>
-
-
-
-
-
-	
-<div id="headers"></div>
-
-
-
-
-<!DOCTYPE html>
-
-<html>
-
-<head>
-
-<!-- 
-
-제일먼저 Jquery를 import한다. 로컬에 다운받은게 있으면 src부분에 경로지정해 주면 된다.
-
-Jquery버전은 상관없다.
-
--->
-
-<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-
-<script type="text/javascript">
-
-//페이지가 로드되면 실행한다.
-
-$(document).ready( function() {
-
-	$("#contents").load("header.html");
-
-	//~이렇게 한줄만 해주면 알아서 contents에 testContents.html파일을 넣어 준다.
-
-});
-
-</script>
-
-</head>
-
-<body>
-
-
-
-<div id="contents"/>
-
-</body>
-
-</html>
-
 
 
 	<footer class="my-3 text-center">

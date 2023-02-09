@@ -16,7 +16,7 @@
 	<div>
 		<nav class="navbar navbar-expand-lg bg-dark navbar-dark">
 			<a class="navbar-brand" th:href="@{/}">
-				<img th:src="@{/images/ShopeAdminSmall.png}" style="width:100px; height:100px;" />
+				<img th:src="@{/images/ShopeAdminSmall.png}" style="width:150px; height:150px;" />
 			</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
 				<span class="navbar-toggler-icon"></span>
@@ -83,11 +83,20 @@
 					<td>[[${user.id}]]</td>
 					<td>[[${user.photos}]]</td>
 					<td>[[${user.email}]]</td>
-					<td>[[${user.firstname}]]></td>
+					<td>[[${user.firstname}]]</td>
 					<td>[[${user.lastname}]]</td>
 					<td><p th:text="${user.roles}"></td>
 					<td><p th:text="${user.enabled}"></td>
-					<td>Edit &nbsp; Delete</span></td>
+					<td><div class="row">
+						&nbsp;
+						<form th:action="@{/users/edit}" method="POST">
+							<input type="hidden" name = "id" th:value="${user.id}">
+							<input type="submit" value = "Edit"></form>
+							&nbsp;
+						<form th:action="@{/users/delete}" th:value="${user.id}" method="POST">
+							<input type="submit" value = "Delete"></form>
+						</div>
+					</td>
 				</tr>
 			</tbdoy>
 		</table>

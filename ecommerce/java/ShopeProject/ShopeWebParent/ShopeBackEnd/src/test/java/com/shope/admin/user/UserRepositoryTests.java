@@ -2,6 +2,7 @@ package com.shope.admin.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -117,6 +118,15 @@ public class UserRepositoryTests {
 
 		// repo.save(userMaria);
 
+	}
+	
+	@Test
+	public void getAllUser(){
+		//Iterable<User> AllUser = repo.findAll();
+		String email = "2222@dddd";
+		User user = repo.findByEmail(email);
+		System.out.println(user);
+		
 	}
 
 }

@@ -20,12 +20,4 @@ public class MainController {
 		return "index";
 	}
 
-//	@GetMapping("users")
-//	public String listAll(Model theModel) {
-//		List UserAll = userservice.listAll();
-//		theModel.addAttribute("UserAll", UserAll);
-//	
-//		return "users";
-//	}
-
 }

@@ -7,5 +7,7 @@ import com.shope.common.entity.User;
 
 @Repository
 public interface UserRepository extends CrudRepository<User, Integer>{
-	//public List<User> findAll();
+
+	User findByEmail(String email);
+
 }

@@ -45,4 +45,14 @@ public class UserServcie {
 		}
 		return false;
 	}
+
+	public boolean isEamilUnique(String email) {
+		User userByEmail = userRepo.getUserByEmail(email);
+		return userByEmail == null;
+	}
+
+
+	public void deleteById(Integer id) {
+		userRepo.deleteById(id);
+	}
 }

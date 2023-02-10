@@ -7,6 +7,8 @@
 	<title>Home - Shopme Admin</title>
 
 	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/style.css}" />
 	<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
 	<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 
@@ -26,24 +28,69 @@
 			box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.25)
 		}
 	</style>
-	
-	<script type="text/javascript">		
-		$(document).ready(function(){
-			let overlappingEmail = "[[${duplicateEmail}]]";
-				if(overlappingEmail){
-					alert("중복된 아이디 입니다.  다른아이디를 입력해주세요");
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$("#buttonCancel").on("click", function () {
+				location.href = "[[@{/users}]]";
+				window.location = "[[@{/users}]]";
+			});
+
+			/*let overlappingEmail = "[[${errorMessage}]]";
+		let enteredEmail = "[[${user.email}]]" 
+		if(overlappingEmail == "duplicateEmail"){
+			alert(enteredEmail + "는 중복된 이메일 입니다.\n다른아이디를 입력해주세요");
+		}	*/
+		
+		rawPasswored = "[[${user.password}]]";
+		if(rawPasswored == "null"){
+			$("passwordEditer").attr("required" , true);
+			console.log(true)
+		}
+		if(rawPasswored != null){
+	        $("passwordEditer").attr("required" , false);
+	        console.log(false)
+        }
+ 
+		});
+
+		function checkEmailUnique(form) {
+			url = "[[@{/users/check_email}]]";
+			rawEmail = "[[${user.email}]]";
+			userEmail = $("#email").val();
+			csrfValue = $("input[name='_csrf']").val();
+			params = {email: userEmail, _csrf: csrfValue};
+			
+			if(rawEmail == userEmail){
+				form.submit();
+				return false;
+			}
+			
+			$.post(url, params, function (response) {
+				if (response == "OK") {
+					form.submit();
+				} else if (response == "Duplicated") {
+					//alert(userEmail+" is alread exist!!");
+					showModalDialog("Warning", userEmail + "is already existed");
+				}else{
+					showModalDialog("Error", "Unkown response from server");
 				}
-		  $("#buttonCancel").on("click", function(){
-		    location.href = "[[@{/users}]]";
-		    window.location = "[[@{/users}]]";	
-		  });
-		});		
+				}).fail(function(){
+					showModalDialog("Error", "Could no connect to this server");
+				});
+			return false;
+		}
+
+		function showModalDialog(title, message) {
+			$("#modalTitle").text(title);
+			$("#modalBody").text(message);
+			$("#modalDialog").modal();
+		}
 	</script>
 
 
-
-	
 </head>
+
 
 <body>
 	<div>
@@ -94,75 +141,108 @@
 			</div>
 		</nav>
 	</div>
-	
-	<h2>Manage Users | Create New User</h2>
 
 	<div class="container">
 		<div class="input-form-backgroud row">
-			<div class="input-form col-md-12 mx-auto">		
-				<div class ="border border-secondary rounded p-3">
-					<form th:action="@{/users/save}" th:object="${newUser}" method="POST" style="max-width: 650px; margin: 0 auto;">
-						
+			<div class="input-form col-md-12 mx-auto">
+				<div class="border border-secondary rounded p-3">
+					<div th:if = "${user.id == null}"> <h2>Manage Users | Create New User</h2> </div>
+					<div th:if = "${user.id != null}"> <h2>수정페이지 </h2></div>
+	
+					<form th:action="@{/users/save}" th:object="${user}" method="POST"
+						style="max-width: 650px; margin: 0 auto;" onsubmit="return checkEmailUnique(this)" ;>
+
 						<input type="hidden" th:field="*{id}" />
-						
+
 						<div class="form-group mb-3">
-							<label for="email" class="col-form-label col-sm-4">E-mail<span class="text-muted">&nbsp;(필수)</span></label>
-							<input type="email" th:field="*{email}" class="form-control mb-4 col-8" placeholder="E-mail" required minlength="8" maxlength="128">
+							<label for="email" class="col-form-label">E-mail<span
+									class="text-muted">&nbsp;(필수)</span></label>
+							<input type="email" th:field="*{email}" class="form-control mb-4 col-8" placeholder="E-mail"
+								required minlength="8" maxlength="128">
 							<div class="invalid-feedback">이메일을 입력해주세요.</div>
 							<div class="valid-feedback">Valid.</div>
 						</div>
-						
+
 						<div class="form-broup row">
 							<div class="col-md-6 mb-3">
-								<label for="firstname" class="col-form-label">First Name<span class="text-muted">&nbsp;(필수)</span></label>
-								<input type="text" th:field="*{firstname}" class="form-control" placeholder="First Name" required minlength="2" maxlength="45">
+								<label for="firstname" class="col-form-label">First Name<span
+										class="text-muted">&nbsp;(필수)</span></label>
+								<input type="text" th:field="*{firstname}" class="form-control" placeholder="First Name"
+									required minlength="2" maxlength="45">
 							</div>
 							<div class="invalid-feedback">
 								성을 입력해주세요.
 							</div>
 							<div class="col-md-6 mb-3">
-								<label for="lastname"class="col-form-label">Last Name<span class="text-muted">&nbsp;(필수)</span></label>
-								<input type="text" th:field="*{lastname}" class="form-control" placeholder="Last Name" required minlength="2" maxlength="45">
+								<label for="lastname" class="col-form-label">Last Name<span
+										class="text-muted">&nbsp;(필수)</span></label>
+								<input type="text" th:field="*{lastname}" class="form-control" placeholder="Last Name"
+									required minlength="2" maxlength="45">
 							</div>
 							<div class="invalid-feedback">
 								이름을 입력해주세요.
-							</div>							
+							</div>
 						</div>
-						
+		
 						<div class="mb-3">
-							<label for="password" class="col-form-label">Password<span class="text-muted">&nbsp;(필수)</span></label>
-							<input type="password" th:field="*{password}" class="form-control mb-4 col-8" placeholder="password" required minlength="8" maxlength="20">
+							<label for="password" class="col-form-label">Password<span
+									class="text-muted">&nbsp;(필수)</span></label>
+									
+							
+									
+		
+								<input type="password" th:field="*{password}" class="form-control mb-4 col-8"
+								id = "passwordEditer" placeholder="password" 
+								required minlength="8" maxlength="20">
+			
+								
 						</div>
-						
+
 						<div class="form-group row">
 							<label class="col-2 col-form-label">Roles :</label>
 							<div class="col-10">
 								<th:bolck th:each="role: ${listRoles}">
-									<input type="checkbox" th:field="*{roles}"
-										th:text="|${role.name}|" 
+									<input type="checkbox" th:field="*{roles}" th:text="|${role.name}|"
 										th:value="${role.id}" class="m-2" />
-									 - <small>[[${role.description}]]</small>	
+									- <small>[[${role.description}]]</small>
 									<br>
 								</th:bolck>
 							</div>
 						</div>
-						
+
 						<hr>
-						
+
 						<div class="form-group row">
 							<label for="enabled" class="col-sm-4 col-form-label">Enabled :</label>
 							<div class="col-sm-8">
-								<input type="checkbox" th:field="*{enabled}" th:text="가능" class="m-2"/>
+								<input type="checkbox" th:field="*{enabled}" th:text="가능" class="m-2" />
 							</div>
-						</div>	
-						
+						</div>
+
 						<div class="text-center">
-							<button  type="submit" id="joinTheMembership" class="btn btn-primary mb-4 col-3 m-3">가입 완료</button>
-							<a th:href="@{/users}" class = "btn btn-secondary mb-4 col-3 m-3">Cancel</a>
-							<input type ="button" id="buttonCancel" value="jQuery" class = "btn btn-outline-secondary mb-4 col-3 m-3">
-						</div>	
-														
+							<button type="submit" id="joinTheMembership" class="btn btn-primary mb-4 col-3 m-3">가입완료</button>
+							<a th:href="@{/users}" class="btn btn-secondary mb-4 col-3 m-3">Cancel</a>
+							<input type="button" id="buttonCancel" value="jQuery" class="btn btn-outline-secondary mb-4 col-3 m-3">
+						</div>
+
 					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade text-center" id="modalDialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="modalTitle">Warning</h4>
+					<button type="button" class="close" data-dismiss="moadl">&times;</button>
+				</div>
+				<div class="modal-body">
+					<span id="modalBody"></span>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
 				</div>
 			</div>
 		</div>

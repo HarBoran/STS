@@ -124,9 +124,11 @@ public class UserRepositoryTests {
 	public void getAllUser(){
 		//Iterable<User> AllUser = repo.findAll();
 		String email = "2222@dddd";
-		User user = repo.findByEmail(email);
+		User user = repo.findByEmail(email);		
 		System.out.println(user);
 		
+		User user2 = repo.getUserByEmail(email);
+		assertThat(user2).isNotNull();	
 	}
 
 }

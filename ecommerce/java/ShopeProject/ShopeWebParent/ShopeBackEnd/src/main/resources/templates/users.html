@@ -7,6 +7,8 @@
 	<title>Home - Shopme Admin</title>
 
 	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/style.css}" />
 	<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
 	<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 </head>
@@ -62,46 +64,73 @@
 		</nav>
 	</div>
 
-	<div class="container">
+	<div class="container fluid">
 		<h2>Manage Users</h2>
 		<a th:href="@{/users/new}" class = "btn btn-primary btn-sm mb-3">Create New User</a>
+		<div th:if = "${message != null}" class="alert alert-success text-center">
+			[[${message}]]
+		</div>		
+		<div th:if = "${messageUpdate != null}" class="alert alert-primary text-center">
+			[[${messageUpdate}]]
+		</div>
+		<div th:if = "${messageDelete != null}" class="alert alert-danger text-center">
+			[[${messageDelete}]]
+		</div>
 		<table class="table table-bordered table-striped table-hover table-responsive-xl">
 			<thead class="thead-dark">
 				<tr>
 					<th>User ID</th>
 					<th>Photos</th>
 					<th>E-mail</th>
-					<th>First Name</th>
+					<th>First Name</th>	
 					<th>Last Name</th>
 					<th>Roles</th>
 					<th>enabled</th>
-					<th>Eite</th>
+					<th>Edite Form</th>
+					<th>Edite A href</th>
 				</tr>
 			</thead>
 			<tbdoy>
 				<tr th:each="user : ${UserAll}">
 					<td>[[${user.id}]]</td>
-					<td>[[${user.photos}]]</td>
+					<td><span class="fa-regular fa-user fa-3x icon-dark"></span>[[${user.photos}]]</td>
 					<td>[[${user.email}]]</td>
 					<td>[[${user.firstname}]]</td>
 					<td>[[${user.lastname}]]</td>
 					<td><p th:text="${user.roles}"></td>
-					<td><p th:text="${user.enabled}"></td>
+					<td><div th:if="${user.enabled == false}"><span class="fa-regular fa-square fa-2x icon-silver"/></div>
+						<div th:if="${user.enabled == true}"><span class="fa-sharp fa-regular fa-square-check fa-2x icon-silver"/></div>
+					</td>
 					<td><div class="row">
-						&nbsp;
-						<form th:action="@{/users/edit}" method="POST">
-							<input type="hidden" name = "id" th:value="${user.id}">
-							<input type="submit" value = "Edit"></form>
 							&nbsp;
-						<form th:action="@{/users/delete}" th:value="${user.id}" method="POST">
-							<input type="submit" value = "Delete"></form>
+							<form th:action="@{/users/edite}" method="POST">
+								<input type="hidden" name = "id" th:value="${user.id}"/>
+								<button title = "Edit this user">
+									<span class="fa-solid fa-pen-to-square fa-2x icon-orange"/>
+								</button>
+							</form>
+								&nbsp;
+							<form th:action="@{/users/delete}" method="POST">
+								<input type="hidden" name = "id" th:value="${user.id}"/>
+								<button title="delete user">
+									<span class="fa-regular fa-trash-can fa-2x icon-orange"/>
+								</button>
+							</form>
+						</div>
+					</td>
+					<td><div class="row">
+						&nbsp;&nbsp;
+						<a th:href="@{'/users/edite/'+${user.id}}" title="edite user">
+						<span class="fa-sharp fa-solid fa-pen-to-square fa-2x icon-green"></span></a>
+  						&nbsp;&nbsp;
+  						<a th:href="@{'/users/delete/'+${user.id}}" title="delete user">
+						<span class="fa-regular fa-trash-can fa-2x icon-green"></span></a>
 						</div>
 					</td>
 				</tr>
 			</tbdoy>
 		</table>
 	</div>
-
 
 	<footer class="my-3 text-center">
 		<p>Shopme Control Panel - Copyright &copy; Shope</p>

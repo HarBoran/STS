@@ -58,8 +58,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", email=" + email + ", firstname=" + firstname + ", lastname=" + lastname
-				+ ", roles=" + roles + "]";
+		return "User [id=" + id + ", email=" + email + ", enabled=" + enabled + ", firstname=" + firstname
+				+ ", lastname=" + lastname + ", password=" + password + ", photos=" + photos + ", roles=" + roles + "]";
 	}
 	
 	public void addRole(Role ...roles) {

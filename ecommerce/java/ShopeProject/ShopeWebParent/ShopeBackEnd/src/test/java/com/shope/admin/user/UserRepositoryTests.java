@@ -130,5 +130,21 @@ public class UserRepositoryTests {
 		User user2 = repo.getUserByEmail(email);
 		assertThat(user2).isNotNull();	
 	}
+	
+	@Test
+	public void testCountById(){
+		Integer id = 1;
+		Long countById = repo.countById(id);
+		assertThat(countById).isNotNull().isGreaterThan(0);
+	}
+	
+	@Test
+	public void testChangeEnabled() {
+		Integer id = 1;
+		User user = repo.findById(id).get();
+		Boolean b = user.isEnabled();
+		user.setEnabled(!b);
+		repo.save(user);
+	}
 
 }

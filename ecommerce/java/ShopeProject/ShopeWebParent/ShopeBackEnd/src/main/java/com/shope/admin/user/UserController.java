@@ -43,11 +43,13 @@ public class UserController {
 
 		List<Role> listRoles = roleservice.listRoles();
 		theModel.addAttribute("listRoles", listRoles);
+		
+		theModel.addAttribute("pageTilte", "Create New User");
 		return "user-form";
 	}
 	
 	@PostMapping("/save")
-	public String saveUser(@ModelAttribute("user")User user, Model theModel, RedirectAttributes redirectAttributes) {
+	public String saveAndEditeUser(@ModelAttribute("user")User user, Model theModel, RedirectAttributes redirectAttributes) {
 /*		String emailWritten = user.getEmail();
 		Boolean duplicateEmail = userservice.findByEmail(emailWritten);	
 		
@@ -67,40 +69,65 @@ public class UserController {
 		return "redirect:/users/";
 	}
 
-	@RequestMapping(value = "/edite", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = {"/edite"}, method = {RequestMethod.GET, RequestMethod.POST})
 	public String editUser(@RequestParam ("id") Integer id, Model theModel, RedirectAttributes redirectAttributes) {
-		User editUser = userservice.findById(id);
-		theModel.addAttribute("user", editUser);
+		try{
+			User editUser = userservice.findById(id);
+			theModel.addAttribute("user", editUser);
+		}catch(UserNotFoundException e){
 		
+			redirectAttributes.addFlashAttribute("messageNotFound", e.getMessage());			
+			return "redirect:/users/";
+		}
 		List<Role> listRoles = roleservice.listRoles();
 		theModel.addAttribute("listRoles", listRoles);
+		
+		theModel.addAttribute("pageTilte", "Edit User (ID : " + id + ")");
+		
 		return "user-form";
+		
 	}
 	
-	@GetMapping(value = "/edite/{id}")
+	@GetMapping(value = {"/edite/{id}"})
 	public String editUserFrom(@PathVariable ("id") Integer id, Model theModel, RedirectAttributes redirectAttributes) {
-		User editUser = userservice.findById(id);
-		theModel.addAttribute("user", editUser);
 		
+		try{
+			User editUser = userservice.findById(id);
+			theModel.addAttribute("user", editUser);
+		}catch(UserNotFoundException e){
+		
+			redirectAttributes.addFlashAttribute("messageNotFound", e.getMessage());			
+			return "redirect:/users/";
+		}
 		List<Role> listRoles = roleservice.listRoles();
 		theModel.addAttribute("listRoles", listRoles);
+		
+		theModel.addAttribute("pageTilte", "Edit User (ID : " + id + ")");
+		
 		return "user-form";
+		
 	}
 	
-	@RequestMapping(value = "/delete", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = {"/delete"}, method = {RequestMethod.GET, RequestMethod.POST})
 	public String deleteUser(@RequestParam ("id") Integer id, Model theModel, RedirectAttributes redirectAttributes) {
-		userservice.deleteById(id);
-		redirectAttributes.addFlashAttribute("messageDelete", "The user has been deletion successfully.");
+//		try {
+//			userservice.deleteById(id);
+			redirectAttributes.addFlashAttribute("messageDelete", "The user ID " + id +  " has been deleted successfully.");
+//		}catch(UserNotFoundException e){
+//			redirectAttributes.addFlashAttribute("messageNotFound", e.getMessage());
+//		}
 		return "redirect:/users/";
 	}
 	
-	@GetMapping(value = "/delete/{id}")
+	@GetMapping(value = {"/delete/{id}"})
 	public String deleteUserUserFrom(@PathVariable ("id") Integer id, Model theModel, RedirectAttributes redirectAttributes) {
-		userservice.deleteById(id);
-		redirectAttributes.addFlashAttribute("messageDelete", "The user has been deletion successfully.");
-		return "redirect:/users/";
+//		try {
+//			userservice.deleteById(id);
+			redirectAttributes.addFlashAttribute("messageDelete", "The user ID " + id +  " has been deleted successfully.");
+//		}catch(UserNotFoundException e){
+//			redirectAttributes.addFlashAttribute("messageNotFound", e.getMessage());
+//		}
+		return "redirect:/users/";		
 	}
 	
-
-
 }

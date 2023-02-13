@@ -11,6 +11,20 @@
 	<link rel="stylesheet" type="text/css" th:href="@{/style.css}" />
 	<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
 	<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+	
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".link-delete").on("click", function(e){
+				e.preventDefault();
+				link = $(this);
+				userId = link.attr("userId");
+				$("#yesButton").attr("href", link.attr("href"));
+				$("#confirmText").text("Are you sure you want to delete this user ID " + userId + "?");
+				$("#confirmModal").modal();
+			});
+		});		
+	</script>
+	
 </head>
 
 <body>
@@ -66,9 +80,12 @@
 
 	<div class="container fluid">
 		<h2>Manage Users</h2>
-		<a th:href="@{/users/new}" class = "btn btn-primary btn-sm mb-3">Create New User</a>
+		<a th:href="@{/users/new}" class = "btn btn-sm mb-3" style = "background-color: darkorange">Create New User</a>
 		<div th:if = "${message != null}" class="alert alert-success text-center">
 			[[${message}]]
+		</div>
+		<div th:if = "${messageNotFound != null}" class="alert alert-info text-center">
+			[[${messageNotFound}]]
 		</div>		
 		<div th:if = "${messageUpdate != null}" class="alert alert-primary text-center">
 			[[${messageUpdate}]]
@@ -76,6 +93,8 @@
 		<div th:if = "${messageDelete != null}" class="alert alert-danger text-center">
 			[[${messageDelete}]]
 		</div>
+		
+		
 		<table class="table table-bordered table-striped table-hover table-responsive-xl">
 			<thead class="thead-dark">
 				<tr>
@@ -85,7 +104,7 @@
 					<th>First Name</th>	
 					<th>Last Name</th>
 					<th>Roles</th>
-					<th>enabled</th>
+					<th>Enabled</th>
 					<th>Edite Form</th>
 					<th>Edite A href</th>
 				</tr>
@@ -98,8 +117,8 @@
 					<td>[[${user.firstname}]]</td>
 					<td>[[${user.lastname}]]</td>
 					<td><p th:text="${user.roles}"></td>
-					<td><div th:if="${user.enabled == false}"><span class="fa-regular fa-square fa-2x icon-silver"/></div>
-						<div th:if="${user.enabled == true}"><span class="fa-sharp fa-regular fa-square-check fa-2x icon-silver"/></div>
+					<td><div th:if="${user.enabled == true}"><span class="fa-sharp fa-regular fa-square-check fa-2x icon-dark"/></div>
+						<div th:if="${user.enabled == false}"><span class="fa-regular fa-square fa-2x icon-silver"/></div>
 					</td>
 					<td><div class="row">
 							&nbsp;
@@ -110,7 +129,7 @@
 								</button>
 							</form>
 								&nbsp;
-							<form th:action="@{/users/delete}" method="POST">
+							<form th:action="@{/users/delete}" method="POST" >
 								<input type="hidden" name = "id" th:value="${user.id}"/>
 								<button title="delete user">
 									<span class="fa-regular fa-trash-can fa-2x icon-orange"/>
@@ -120,17 +139,43 @@
 					</td>
 					<td><div class="row">
 						&nbsp;&nbsp;
-						<a th:href="@{'/users/edite/'+${user.id}}" title="edite user">
-						<span class="fa-sharp fa-solid fa-pen-to-square fa-2x icon-green"></span></a>
+						<a class="fa-sharp fa-solid fa-pen-to-square fa-2x icon-green" 
+						th:href="@{'/users/edite/'+${user.id}}"
+						title="edite user">
+						</a>
   						&nbsp;&nbsp;
-  						<a th:href="@{'/users/delete/'+${user.id}}" title="delete user">
-						<span class="fa-regular fa-trash-can fa-2x icon-green"></span></a>
+  						<a class="fa-regular fa-trash-can fa-2x icon-green link-delete"
+  						th:href = "@{'/users/delete/'+${user.id}}"
+  						th:userId = "${user.id}"
+  						title="delete user"></a>
 						</div>
 					</td>
 				</tr>
 			</tbdoy>
 		</table>
 	</div>
+	
+	
+	<div class="modal fade text-center" id="confirmModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="modalTitle">Delete Confirmation</h4>
+					<!--<button type="button" class="close" data-dismiss="modal">&times;</button>-->
+				</div>
+				
+				<div class="modal-body">
+					<span id="confirmText"></span>
+				</div>
+				
+				<div class="modal-footer">
+					<a class="btn btn-success" href="" id="yesButton">Yes</a>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
 
 	<footer class="my-3 text-center">
 		<p>Shopme Control Panel - Copyright &copy; Shope</p>

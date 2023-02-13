@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+c<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-	<title>Home - Shopme Admin</title>
+	<title>[[${pageTilte}]]</title>
 
 	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
 	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}" />
@@ -44,41 +44,55 @@
 		
 		rawPasswored = "[[${user.password}]]";
 		if(rawPasswored == "null"){
-			$("passwordEditer").attr("required" , true);
+			$("#passwordEditer").attr("required" , true);
+			console.log(rawPasswored)
 			console.log(true)
 		}
 		if(rawPasswored != null){
-	        $("passwordEditer").attr("required" , false);
+	        $("#passwordEditer").removeAttr("required");
+	        console.log(rawPasswored)
 	        console.log(false)
         }
- 
+        
+       
 		});
 
+		 
 		function checkEmailUnique(form) {
 			url = "[[@{/users/check_email}]]";
-			rawEmail = "[[${user.email}]]";
+			beforeEditeEmail = "[[${user.email}]]";
 			userEmail = $("#email").val();
+			beforeEditePassword = "[[${user.password}]]";
+			userPassword = $("#password").val();
 			csrfValue = $("input[name='_csrf']").val();
 			params = {email: userEmail, _csrf: csrfValue};
 			
-			if(rawEmail == userEmail){
+		
+			if(beforeEditeEmail == userEmail){
+				if (userPassword == ""){
+						$("#password").val(beforeEditePassword);
+					}
 				form.submit();
 				return false;
 			}
 			
+			
 			$.post(url, params, function (response) {
-				if (response == "OK") {
-					form.submit();
-				} else if (response == "Duplicated") {
-					//alert(userEmail+" is alread exist!!");
-					showModalDialog("Warning", userEmail + "is already existed");
-				}else{
-					showModalDialog("Error", "Unkown response from server");
-				}
-				}).fail(function(){
+					if (response == "OK") {
+						form.submit();
+					} else if (response == "Duplicated") {
+						//alert(userEmail+" is alread exist!!");
+						showModalDialog("Warning", userEmail + "is already existed");
+					}else{
+						showModalDialog("Error", "Unkown response from server");
+					}
+				})
+				.fail(function(){
 					showModalDialog("Error", "Could no connect to this server");
 				});
-			return false;
+				
+			
+		return false;
 		}
 
 		function showModalDialog(title, message) {
@@ -146,8 +160,7 @@
 		<div class="input-form-backgroud row">
 			<div class="input-form col-md-12 mx-auto">
 				<div class="border border-secondary rounded p-3">
-					<div th:if = "${user.id == null}"> <h2>Manage Users | Create New User</h2> </div>
-					<div th:if = "${user.id != null}"> <h2>수정페이지 </h2></div>
+					<h2>Manage Users | [[${pageTilte}]]</h2>
 	
 					<form th:action="@{/users/save}" th:object="${user}" method="POST"
 						style="max-width: 650px; margin: 0 auto;" onsubmit="return checkEmailUnique(this)" ;>
@@ -187,15 +200,10 @@
 						<div class="mb-3">
 							<label for="password" class="col-form-label">Password<span
 									class="text-muted">&nbsp;(필수)</span></label>
-									
-							
-									
-		
-								<input type="password" th:field="*{password}" class="form-control mb-4 col-8"
+							<input type="password" th:field="*{password}" class="form-control mb-4 col-8"
 								id = "passwordEditer" placeholder="password" 
-								required minlength="8" maxlength="20">
-			
-								
+								required minlength="8" maxlength="20">		
+							<div th:text = "*{password}"></div>						
 						</div>
 
 						<div class="form-group row">
@@ -220,7 +228,10 @@
 						</div>
 
 						<div class="text-center">
-							<button type="submit" id="joinTheMembership" class="btn btn-primary mb-4 col-3 m-3">가입완료</button>
+							<button type="submit" id="joinTheMembership" class="btn btn-primary mb-4 col-3 m-3">
+								<div th:if = "${user.id == null}">가입완료</div>
+								<div th:if = "${user.id != null}">수정완료</div>
+							</button>
 							<a th:href="@{/users}" class="btn btn-secondary mb-4 col-3 m-3">Cancel</a>
 							<input type="button" id="buttonCancel" value="jQuery" class="btn btn-outline-secondary mb-4 col-3 m-3">
 						</div>
@@ -236,7 +247,7 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<h4 class="modal-title" id="modalTitle">Warning</h4>
-					<button type="button" class="close" data-dismiss="moadl">&times;</button>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
 				<div class="modal-body">
 					<span id="modalBody"></span>

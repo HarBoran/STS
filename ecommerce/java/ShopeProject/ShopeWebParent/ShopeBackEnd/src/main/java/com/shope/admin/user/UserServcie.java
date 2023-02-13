@@ -1,6 +1,7 @@
 package com.shope.admin.user;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,12 +31,16 @@ public class UserServcie {
 	
 
 	public void save(User user) {
-		encodePassword(user);
+		//encodePassword(user);
 		userRepo.save(user);
 	}
 
-	public User findById(Integer id) {
-		return userRepo.findById(id).get();
+	public User findById(Integer id) throws UserNotFoundException {
+		try {
+			return userRepo.findById(id).get();
+		}catch(NoSuchElementException ex) {
+			throw new UserNotFoundException("Could not find any user with ID "+id);
+		}
 	}
 
 	public Boolean findByEmail(String emailWritten) {
@@ -52,7 +57,12 @@ public class UserServcie {
 	}
 
 
-	public void deleteById(Integer id) {
+	public void deleteById(Integer id) throws UserNotFoundException {
+		Long countById = userRepo.countById(id);
+		if (countById == null || countById == 0) {
+			throw new UserNotFoundException("Could not find any user with ID "+id);
+		}
 		userRepo.deleteById(id);
 	}
+
 }

@@ -15,4 +15,6 @@ public interface UserRepository extends CrudRepository<User, Integer>{
 	//JPA 쿼리 구현
 	@Query("SELECT u FROM User u WHERE u.email = :email")
 	public User getUserByEmail(@Param("email") String email);
+	
+	public Long countById(Integer id);
 }

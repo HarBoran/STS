@@ -117,8 +117,11 @@
 					<td>[[${user.firstname}]]</td>
 					<td>[[${user.lastname}]]</td>
 					<td><p th:text="${user.roles}"></td>
-					<td><div th:if="${user.enabled == true}"><span class="fa-sharp fa-regular fa-square-check fa-2x icon-dark"/></div>
+					<td><a th:href="@{'/users/enabled/'+${user.id}}"
+						title="enabled">
+						<div th:if="${user.enabled == true}"><span class="fa-sharp fa-regular fa-square-check fa-2x icon-dark"/></div>
 						<div th:if="${user.enabled == false}"><span class="fa-regular fa-square fa-2x icon-silver"/></div>
+						</a>
 					</td>
 					<td><div class="row">
 							&nbsp;

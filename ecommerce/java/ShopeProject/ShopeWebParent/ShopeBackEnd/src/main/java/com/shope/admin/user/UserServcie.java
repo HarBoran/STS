@@ -4,13 +4,14 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shope.common.entity.User;
 
 @Service
+@Transactional
 public class UserServcie {
 	
 	@Autowired
@@ -31,7 +32,18 @@ public class UserServcie {
 	
 
 	public void save(User user) {
-		//encodePassword(user);
+		boolean isUpdateingUser = (user.getId() !=null);
+		if(isUpdateingUser) {
+			User existingUser = userRepo.findById(user.getId()).get();
+			
+			if (user.getPassword().isEmpty()) {
+				user.setPassword(existingUser.getPassword());
+			}else {
+				encodePassword(user);
+			}
+		}else {
+			encodePassword(user);
+		}
 		userRepo.save(user);
 	}
 
@@ -51,9 +63,20 @@ public class UserServcie {
 		return false;
 	}
 
-	public boolean isEamilUnique(String email) {
+	public boolean isEmailUnique(Integer id, String email) {
 		User userByEmail = userRepo.getUserByEmail(email);
-		return userByEmail == null;
+		if(userByEmail == null) return true;
+		
+		boolean isCreatingNew = (id == null);
+		
+		if(isCreatingNew) {
+			if(userByEmail != null) return false;
+		}else {
+			if(userByEmail.getId() != id) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 
@@ -63,6 +86,10 @@ public class UserServcie {
 			throw new UserNotFoundException("Could not find any user with ID "+id);
 		}
 		userRepo.deleteById(id);
+	}
+
+	public void updateEndabled(Boolean enabled, Integer id) {
+		userRepo.updateEndabled(id, enabled);
 	}
 
 }

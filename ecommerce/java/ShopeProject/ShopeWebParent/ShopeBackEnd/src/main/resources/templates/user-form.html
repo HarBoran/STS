@@ -43,15 +43,10 @@ c<!DOCTYPE html>
 		}	*/
 		
 		rawPasswored = "[[${user.password}]]";
-		if(rawPasswored == "null"){
-			$("#passwordEditer").attr("required" , true);
-			console.log(rawPasswored)
-			console.log(true)
-		}
 		if(rawPasswored != null){
 	        $("#passwordEditer").removeAttr("required");
 	        console.log(rawPasswored)
-	        console.log(false)
+	        console.log(rawPasswored != null)
         }
         
        
@@ -60,14 +55,18 @@ c<!DOCTYPE html>
 		 
 		function checkEmailUnique(form) {
 			url = "[[@{/users/check_email}]]";
-			beforeEditeEmail = "[[${user.email}]]";
 			userEmail = $("#email").val();
+			csrfValue = $("input[name='_csrf']").val();
+		
+			userId = $("#id").val();
+			params = {id: userId, email: userEmail, _csrf: csrfValue};
+			
+			//집적추가한 부분
+			/*
+			beforeEditeEmail = "[[${user.email}]]";			
 			beforeEditePassword = "[[${user.password}]]";
 			userPassword = $("#password").val();
-			csrfValue = $("input[name='_csrf']").val();
-			params = {email: userEmail, _csrf: csrfValue};
 			
-		
 			if(beforeEditeEmail == userEmail){
 				if (userPassword == ""){
 						$("#password").val(beforeEditePassword);
@@ -75,7 +74,7 @@ c<!DOCTYPE html>
 				form.submit();
 				return false;
 			}
-			
+			*/
 			
 			$.post(url, params, function (response) {
 					if (response == "OK") {
@@ -163,7 +162,7 @@ c<!DOCTYPE html>
 					<h2>Manage Users | [[${pageTilte}]]</h2>
 	
 					<form th:action="@{/users/save}" th:object="${user}" method="POST"
-						style="max-width: 650px; margin: 0 auto;" onsubmit="return checkEmailUnique(this)" ;>
+						style="max-width: 700px; margin: 0 auto;" onsubmit="return checkEmailUnique(this)" ;>
 
 						<input type="hidden" th:field="*{id}" />
 
@@ -198,12 +197,20 @@ c<!DOCTYPE html>
 						</div>
 		
 						<div class="mb-3">
-							<label for="password" class="col-form-label">Password<span
+							<label for="password" class="col-sm-4 col-form-label">Password<span
 									class="text-muted">&nbsp;(필수)</span></label>
-							<input type="password" th:field="*{password}" class="form-control mb-4 col-8"
-								id = "passwordEditer" placeholder="password" 
-								required minlength="8" maxlength="20">		
-							<div th:text = "*{password}"></div>						
+							
+								<input th:if ="${user.id == null}"
+								type="password" th:field="*{password}" class="form-control mb-4 col-8"
+									id = "passwordEditer" placeholder="password" 
+									required minlength="8" maxlength="20">
+								<input th:if ="${user.id != null}"
+								type="password" th:field="*{password}" class="form-control mb-4 col-8"
+									id = "passwordEditer" placeholder="password" 
+									 minlength="8" maxlength="20">								
+									
+							<div th:text = "*{password}"></div>		
+									
 						</div>
 
 						<div class="form-group row">

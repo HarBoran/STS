@@ -19,7 +19,6 @@ import com.shope.common.entity.User;
 
 @Controller
 @RequestMapping(value = "users", method = {RequestMethod.GET, RequestMethod.POST})
-
 public class UserController {
 	
 	@Autowired
@@ -68,6 +67,22 @@ public class UserController {
 		}
 		return "redirect:/users/";
 	}
+	
+	@GetMapping(value = {"/enabled/{id}"})
+	public String enabledUserFrom(@PathVariable ("id") Integer id, Model theModel, RedirectAttributes redirectAttributes) {
+		try {
+			User user = userservice.findById(id);
+			Boolean endabled = !(user.isEnabled());
+			//user.setEnabled(!user.isEnabled());
+			//userservice.save(user);
+			userservice.updateEndabled(endabled, id);
+		}catch(UserNotFoundException e){
+			redirectAttributes.addFlashAttribute("messageNotFound", e.getMessage());
+		}
+		return "redirect:/users/";		
+	}
+	
+
 
 	@RequestMapping(value = {"/edite"}, method = {RequestMethod.GET, RequestMethod.POST})
 	public String editUser(@RequestParam ("id") Integer id, Model theModel, RedirectAttributes redirectAttributes) {
@@ -120,7 +135,7 @@ public class UserController {
 	}
 	
 	@GetMapping(value = {"/delete/{id}"})
-	public String deleteUserUserFrom(@PathVariable ("id") Integer id, Model theModel, RedirectAttributes redirectAttributes) {
+	public String deleteUserFrom(@PathVariable ("id") Integer id, Model theModel, RedirectAttributes redirectAttributes) {
 //		try {
 //			userservice.deleteById(id);
 			redirectAttributes.addFlashAttribute("messageDelete", "The user ID " + id +  " has been deleted successfully.");

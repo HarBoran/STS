@@ -31,7 +31,7 @@ public class UserServcie {
 	}
 	
 
-	public void save(User user) {
+	public User save(User user) {
 		boolean isUpdateingUser = (user.getId() !=null);
 		if(isUpdateingUser) {
 			User existingUser = userRepo.findById(user.getId()).get();
@@ -44,7 +44,7 @@ public class UserServcie {
 		}else {
 			encodePassword(user);
 		}
-		userRepo.save(user);
+		return userRepo.save(user);
 	}
 
 	public User findById(Integer id) throws UserNotFoundException {
@@ -88,7 +88,7 @@ public class UserServcie {
 		userRepo.deleteById(id);
 	}
 
-	public void updateEndabled(Boolean enabled, Integer id) {
+	public void updateEndabled(Integer id, Boolean enabled) {
 		userRepo.updateEndabled(id, enabled);
 	}
 

@@ -1,10 +1,14 @@
 package com.shope.admin.user;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
+import java.net.http.HttpResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
+import com.shope.admin.FileUploadUtil;
 import com.shope.common.entity.Role;
 import com.shope.common.entity.User;
 
@@ -48,7 +55,8 @@ public class UserController {
 	}
 	
 	@PostMapping("/save")
-	public String saveAndEditeUser(@ModelAttribute("user")User user, Model theModel, RedirectAttributes redirectAttributes) {
+	public String saveAndEditeUser(@ModelAttribute("user")User user, Model theModel, RedirectAttributes redirectAttributes,
+			@RequestParam("image") MultipartFile multipartFile) throws IOException {
 /*		String emailWritten = user.getEmail();
 		Boolean duplicateEmail = userservice.findByEmail(emailWritten);	
 		
@@ -59,6 +67,8 @@ public class UserController {
 			return "user-form";
 		}
 */	
+		
+/*		
 		userservice.save(user);
 		if(user.getId() == 0) {
 			redirectAttributes.addFlashAttribute("message", "The user has been saved successfully.");
@@ -67,18 +77,27 @@ public class UserController {
 		}
 		return "redirect:/users/";
 	}
-	
-	@GetMapping(value = {"/enabled/{id}"})
-	public String enabledUserFrom(@PathVariable ("id") Integer id, Model theModel, RedirectAttributes redirectAttributes) {
-		try {
-			User user = userservice.findById(id);
-			Boolean endabled = !(user.isEnabled());
-			//user.setEnabled(!user.isEnabled());
-			//userservice.save(user);
-			userservice.updateEndabled(endabled, id);
-		}catch(UserNotFoundException e){
-			redirectAttributes.addFlashAttribute("messageNotFound", e.getMessage());
+*/
+		if(!multipartFile.isEmpty()) {
+	         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+			 user.setPhotos(fileName);
+			 User saveUser = userservice.save(user);
+			 String uploadDir = "user-photos/" + saveUser.getId();
+			 FileUploadUtil.saveFile(uploadDir,fileName,multipartFile);
+		
 		}
+		
+		redirectAttributes.addFlashAttribute("message", "The user has been saved successfully.");
+		return "redirect:/users/";
+	}
+	
+	@GetMapping(value = {"/{id}/enabled/{status}"})
+	public String editEnabledUserFrom(@PathVariable ("id") Integer id, @PathVariable ("status") boolean enabled, Model theModel, RedirectAttributes redirectAttributes) {
+
+		userservice.updateEndabled(id, enabled);
+		String status = enabled ? "enabled" : "disabled";
+		String message ="The user ID " + id + " has been " + status;
+		redirectAttributes.addFlashAttribute("messageEnabled", message);	
 		return "redirect:/users/";		
 	}
 	

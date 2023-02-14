@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 
 import com.shope.common.entity.Role;
@@ -31,7 +32,7 @@ public class UserRepositoryTests {
 	private TestEntityManager entityManager;
 
 	// JUnit test
-	//@Test
+	@Test
 	public void testCreateFirstUserWithOneRole() {
 		User UserDavid = new User("david@gmail.com", "David", "Juda", "1234");
 		Role roleAdmin = entityManager.find(Role.class, 1);
@@ -43,7 +44,7 @@ public class UserRepositoryTests {
 
 	}
 
-	//@Test
+	@Test
 	public void testCreateFirstUserWithManyRole() {
 		User UserMaria = new User("maria@email.com", "Maria", "Magdaline", "2023");
 
@@ -61,7 +62,7 @@ public class UserRepositoryTests {
 
 	}
 
-	//@Test
+	@Test
 	public void findAllUserInfo() {
 		Iterable<User> UserAll = repo.findAll();
 
@@ -72,7 +73,7 @@ public class UserRepositoryTests {
 		UserAll.forEach(user -> System.out.println(user));
 	}
 
-	//@Test
+	@Test
 	public void findUserInfo() {
 		Optional<User> user = repo.findById(1);
 		User user2 = repo.findById(1).get();
@@ -81,7 +82,7 @@ public class UserRepositoryTests {
 
 	}
 
-	//@Test
+	@Test
 	public void testUpdateUserDetails() {
 		User user = repo.findById(1).get();
 		user.setEnabled(true);
@@ -89,7 +90,7 @@ public class UserRepositoryTests {
 		repo.save(user);
 	}
 
-	//@Test
+	@Test
 	public void testChangeUserRole() {
 
 		User userMaria = repo.findById(1).get();
@@ -121,7 +122,7 @@ public class UserRepositoryTests {
 
 	}
 	
-	//@Test
+	@Test
 	public void getAllUser(){
 		//Iterable<User> AllUser = repo.findAll();
 		String email = "2222@dddd";
@@ -132,7 +133,7 @@ public class UserRepositoryTests {
 		assertThat(user2).isNotNull();	
 	}
 	
-	//@Test
+	@Test
 	public void testCountById(){
 		Integer id = 1;
 		Long countById = repo.countById(id);
@@ -147,6 +148,19 @@ public class UserRepositoryTests {
 		//user.setEnabled(!b);
 		repo.updateEndabled(id, !b);
 		//repo.save(user);
+	}
+	
+	@Test
+	public void insertUserThirty() {		
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		String rawPassword = "1234";
+		String encodePassword = passwordEncoder.encode(rawPassword);
+		
+		for (int i=1; i < 31; i ++) {
+			User user = new User("Minji@gmail.com"+i, "Danielle", "Haerin", encodePassword);
+			Role roleAdmin = entityManager.find(Role.class,(i%5)+1);
+			repo.save(user).addRole(roleAdmin);
+		}
 	}
 
 }

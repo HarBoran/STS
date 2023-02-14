@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="users")
@@ -55,6 +56,11 @@ public class User {
 		this.password = password;
 	}
 	
+	 @Transient
+	   public String getPhotosImagePath() {
+	      if(id==null || photos ==null) return "/images/default-user.png";
+	      return "/user-photos/" + this.id +"/"+this.photos;
+	   }
 
 	@Override
 	public String toString() {

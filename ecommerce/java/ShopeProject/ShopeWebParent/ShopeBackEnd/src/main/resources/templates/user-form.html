@@ -49,66 +49,64 @@
 	        console.log(rawPasswored != null)
         }
         
-        $("#fileImage").change(function () {
-			fileSize = this.files[0].size;
-			//1024*1024
-			if(fileSize > 1048576) {
+		$("#fileImage").change(function(){
+		fileSize = this.files[0].size;
+			if(fileSize > 1048576){
 				this.setCustomValidity("You must choose an image less than 1MB!");
 				this.reportValidity();
 			}else{
 				this.setCustomValidity("");
 				showImageThumbnail(this);
 			}
-        
-       	});
+		});
 	});
 	
-	function showImageThumbnail(fileInput){
-		var file = fileInput.files[0];
-		var reader = new FileReader();
-		reader.onload = function(e){
-			$("#thumnail").attr("src", e.targeet.result);	
-		};
-		reader.readAsDataURL(file);
-	}
+    function showImageThumbnail(fileInput){
+       var file = fileInput.files[0];
+       var reader = new FileReader();
+       reader.onload = function(e){
+          $("#thumbnail").attr("src",e.target.result);
+       };
+       reader.readAsDataURL(file);
+    }
 
 		 
-		function checkEmailUnique(form) {
-			url = "[[@{/users/check_email}]]";
-			userEmail = $("#email").val();
-			csrfValue = $("input[name='_csrf']").val();
+	function checkEmailUnique(form) {
+		url = "[[@{/users/check_email}]]";
+		userEmail = $("#email").val();
+		csrfValue = $("input[name='_csrf']").val();
+	
+		userId = $("#id").val();
+		params = {id: userId, email: userEmail, _csrf: csrfValue};
+			
+		//집적추가한 부분
+		/*
+		beforeEditeEmail = "[[${user.email}]]";			
+		beforeEditePassword = "[[${user.password}]]";
+		userPassword = $("#password").val();
 		
-			userId = $("#id").val();
-			params = {id: userId, email: userEmail, _csrf: csrfValue};
+		if(beforeEditeEmail == userEmail){
+			if (userPassword == ""){
+					$("#password").val(beforeEditePassword);
+				}
+			form.submit();
+			return false;
+		}
+		*/
 			
-			//집적추가한 부분
-			/*
-			beforeEditeEmail = "[[${user.email}]]";			
-			beforeEditePassword = "[[${user.password}]]";
-			userPassword = $("#password").val();
-			
-			if(beforeEditeEmail == userEmail){
-				if (userPassword == ""){
-						$("#password").val(beforeEditePassword);
-					}
-				form.submit();
-				return false;
-			}
-			*/
-			
-			$.post(url, params, function (response) {
-					if (response == "OK") {
-						form.submit();
-					} else if (response == "Duplicated") {
-						//alert(userEmail+" is alread exist!!");
-						showModalDialog("Warning", userEmail + "is already existed");
-					}else{
-						showModalDialog("Error", "Unkown response from server");
-					}
-				})
-				.fail(function(){
-					showModalDialog("Error", "Could no connect to this server");
-				});
+		$.post(url, params, function (response) {
+				if (response == "OK") {
+					form.submit();
+				} else if (response == "Duplicated") {
+					//alert(userEmail+" is alread exist!!");
+					showModalDialog("Warning", userEmail + "is already existed");
+				}else{
+					showModalDialog("Error", "Unkown response from server");
+				}
+			})
+			.fail(function(){
+				showModalDialog("Error", "Could no connect to this server");
+			});
 				
 			
 		return false;
@@ -120,6 +118,8 @@
 			$("#modalDialog").modal();
 		}
 	</script>
+
+
 
 
 </head>
@@ -246,7 +246,7 @@
 							</div>
 						</div>
 
-						<hr>
+						<hr> <div th:text = "${user}"/>
 
 						<div class="form-group row">
 							<label for="enabled" class="col-sm-4 col-form-label">Enabled :</label>
@@ -256,10 +256,11 @@
 						</div>
 						
 						<div class="form-group row">
-							<label for="photos" class="col-sm-4 col-form-label">Photos :</label>
-							<div class="col-sm-8">
+							<label for="photos" class="col-sm-2 col-form-label">Photos :</label>
+							<div class="col-sm-10">
+								<input type="hidden" th:field="*{photos}"/>
 								<input type="file" id="fileImage" name="image" accept="image/png,image/jpeg" class="mb-2" />
-				            	<img id="thumbnail" alt="Photos preview" th:src="@{${user.photosImagePath}}" class="img-fluid" />
+				            	<img id="thumbnail" alt="Photos preview" th:src="@{${user.photosImagePath}}" style="width: 250px;" class="img-fluid" />
 							</div>
 						</div>
 					

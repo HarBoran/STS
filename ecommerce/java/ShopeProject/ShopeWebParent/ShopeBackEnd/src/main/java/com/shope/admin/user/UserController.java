@@ -1,11 +1,12 @@
 package com.shope.admin.user;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.net.http.HttpResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -34,10 +35,33 @@ public class UserController {
 	@Autowired
 	RoleServcie roleservice; 
 	
-	@GetMapping("")
+	@GetMapping({"", "/"})
 	public String listAll(Model theModel) {
-		List<User> UserAll = userservice.listAll();
-		theModel.addAttribute("UserAll", UserAll);
+//		List<User> UserAll = userservice.listAll();
+//		theModel.addAttribute("UserAll", UserAll);
+		return listByPage(1, theModel);
+	}
+	
+	
+
+	
+	@GetMapping("/{pageNum}")
+	public String listByPage(@PathVariable(name = "pageNum") int pageNum,Model theModel) {
+
+		Page<User> page = userservice.listByPage(pageNum);
+		System.out.println("-----------------");
+		
+//		Showing users # 5 to 8 of 15
+//		현재 페이지번호,  System.out.println(pageNum+1);
+//		각각 페이지별 보여질 내용의 수, System.out.println("getNumberOfElements :"+page.getNumberOfElements());
+//		페이지에 들어갈 컨텐츠, System.out.println("getNumber + 1 :"+page.getNumber()+1);
+//		전체 페이지 개수,  System.out.println("getTotalPages :"+page.getTotalPages());
+//		전체 데이터의 수 System.out.println("getTotalElements :"+page.getTotalElements());
+		
+		List<User> listUsers = page.getContent();
+		theModel.addAttribute("UserAll", listUsers);
+		List<Integer> pages = new ArrayList<Integer>(Arrays.asList(1,2,3));
+		theModel.addAttribute("pages", pages);
 		return "users";
 	}
 	
@@ -57,6 +81,7 @@ public class UserController {
 	@PostMapping("/save")
 	public String saveAndEditeUser(@ModelAttribute("user")User user, Model theModel, RedirectAttributes redirectAttributes,
 			@RequestParam("image") MultipartFile multipartFile) throws IOException {
+		
 /*		String emailWritten = user.getEmail();
 		Boolean duplicateEmail = userservice.findByEmail(emailWritten);	
 		
@@ -79,12 +104,29 @@ public class UserController {
 	}
 */
 		if(!multipartFile.isEmpty()) {
+//			User originalUser = new User();
+//			try{
+//				originalUser = userservice.findById(user.getId());
+//			}catch(UserNotFoundException e){			
+//				redirectAttributes.addFlashAttribute("messageNotFound", e.getMessage());			
+//				return "redirect:/users/";
+//			}
+//		
+//			if(originalUser.getPhotos() != multipartFile.getOriginalFilename()) {
+//				String uploadDir = "user-photos/" + originalUser.getId();
+//				String fileName = StringUtils.cleanPath(originalUser.getPhotos());
+//				FileUploadUtil.delete(uploadDir,fileName);				
+//			}
+			
 	         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 			 user.setPhotos(fileName);
 			 User saveUser = userservice.save(user);
 			 String uploadDir = "user-photos/" + saveUser.getId();
+			 FileUploadUtil.cleanDir(uploadDir);	
 			 FileUploadUtil.saveFile(uploadDir,fileName,multipartFile);
-		
+		} else {
+			if (user.getPhotos().isEmpty()) user.setPhotos(null);
+				userservice.save(user);
 		}
 		
 		redirectAttributes.addFlashAttribute("message", "The user has been saved successfully.");
@@ -144,23 +186,23 @@ public class UserController {
 	
 	@RequestMapping(value = {"/delete"}, method = {RequestMethod.GET, RequestMethod.POST})
 	public String deleteUser(@RequestParam ("id") Integer id, Model theModel, RedirectAttributes redirectAttributes) {
-//		try {
-//			userservice.deleteById(id);
+		try {
+			userservice.deleteById(id);
 			redirectAttributes.addFlashAttribute("messageDelete", "The user ID " + id +  " has been deleted successfully.");
-//		}catch(UserNotFoundException e){
-//			redirectAttributes.addFlashAttribute("messageNotFound", e.getMessage());
-//		}
+		}catch(UserNotFoundException e){
+			redirectAttributes.addFlashAttribute("messageNotFound", e.getMessage());
+		}
 		return "redirect:/users/";
 	}
 	
 	@GetMapping(value = {"/delete/{id}"})
 	public String deleteUserFrom(@PathVariable ("id") Integer id, Model theModel, RedirectAttributes redirectAttributes) {
-//		try {
-//			userservice.deleteById(id);
+		try {
+			userservice.deleteById(id);
 			redirectAttributes.addFlashAttribute("messageDelete", "The user ID " + id +  " has been deleted successfully.");
-//		}catch(UserNotFoundException e){
-//			redirectAttributes.addFlashAttribute("messageNotFound", e.getMessage());
-//		}
+		}catch(UserNotFoundException e){
+			redirectAttributes.addFlashAttribute("messageNotFound", e.getMessage());
+		}
 		return "redirect:/users/";		
 	}
 	

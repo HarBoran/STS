@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+//웹에 이미지가 들어나게 하는 부분
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
    

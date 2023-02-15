@@ -68,7 +68,7 @@ public class User {
 				+ ", lastname=" + lastname + ", password=" + password + ", photos=" + photos + ", roles=" + roles + "]";
 	}
 	
-	public void addRole(Role ...roles) {
+	public void addRole(Role... roles) {
 //		for(Role role : roles) {
 //			this.roles.add(role);
 //		}

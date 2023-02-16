@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -188,18 +189,18 @@
 						<input type="hidden" th:field="*{id}" />
 
 						<div class="form-group mb-3">
-							<label for="email" class="col-form-label">E-mail<span
-									class="text-muted">&nbsp;(필수)</span></label>
-							<input type="email" th:field="*{email}" class="form-control mb-4 col-8" placeholder="E-mail"
-								required minlength="8" maxlength="128">
+							<label for="email" class="col-form-label">E-mail
+								<span class="text-muted">&nbsp;(필수)</span></label>
+							<input type="text" th:field="*{email}" class="form-control mb-4 col-8" placeholder="E-mail"
+								required minlength="1" maxlength="128">
 							<div class="invalid-feedback">이메일을 입력해주세요.</div>
 							<div class="valid-feedback">Valid.</div>
 						</div>
 
 						<div class="form-broup row">
 							<div class="col-md-6 mb-3">
-								<label for="firstname" class="col-form-label">First Name<span
-										class="text-muted">&nbsp;(필수)</span></label>
+								<label for="firstname" class="col-form-label">First Name
+									<span class="text-muted">&nbsp;(필수)</span></label>
 								<input type="text" th:field="*{firstname}" class="form-control" placeholder="First Name"
 									required minlength="2" maxlength="45">
 							</div>
@@ -207,8 +208,8 @@
 								성을 입력해주세요.
 							</div>
 							<div class="col-md-6 mb-3">
-								<label for="lastname" class="col-form-label">Last Name<span
-										class="text-muted">&nbsp;(필수)</span></label>
+								<label for="lastname" class="col-form-label">Last Name
+									<span class="text-muted">&nbsp;(필수)</span></label>
 								<input type="text" th:field="*{lastname}" class="form-control" placeholder="Last Name"
 									required minlength="2" maxlength="45">
 							</div>
@@ -218,20 +219,17 @@
 						</div>
 		
 						<div class="mb-3">
-							<label for="password" class="col-sm-4 col-form-label">Password<span
-									class="text-muted">&nbsp;(필수)</span></label>
+							<label for="password" class="col-sm-4 col-form-label">Password
+								<span class="text-muted">&nbsp;(필수)</span></label>
 							
 								<input th:if ="${user.id == null}"
 								type="password" th:field="*{password}" class="form-control mb-4 col-8"
 									id = "passwordEditer" placeholder="password" 
-									required minlength="8" maxlength="20">
+									required minlength="1" maxlength="20">
 								<input th:if ="${user.id != null}"
 								type="password" th:field="*{password}" class="form-control mb-4 col-8"
 									id = "passwordEditer" placeholder="password" 
-									 minlength="8" maxlength="20">								
-									
-							<div th:text = "*{password}"></div>		
-									
+									 minlength="1" maxlength="20">											
 						</div>
 
 						<div class="form-group row">
@@ -246,8 +244,8 @@
 							</div>
 						</div>
 
-						<hr> <div th:text = "${user}"/>
-
+						<hr> 
+						
 						<div class="form-group row">
 							<label for="enabled" class="col-sm-4 col-form-label">Enabled :</label>
 							<div class="col-sm-8">

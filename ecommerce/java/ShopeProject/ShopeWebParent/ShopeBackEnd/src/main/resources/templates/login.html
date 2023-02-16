@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+	<title>Home - Shopme Admin</title>
+
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/style.css}" />
+	<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</head>
+
+<body>
+
+	<div class="container">
+		<a class="navbar-brand" th:href="@{/}">
+			<img th:src="@{/images/ShopeAdminSmall.png}" style="width:150px; height:150px;" />
+		</a>
+	</div>
+
+	<div class="container">
+		<div style="width: 400px; margin: 0 auto;">
+			<div class="border border-secondary rounded p-3">
+			<h2>Access to Control Panel</h2>
+			<form th:action="@{/login}" method="post" class="was-validated">
+				
+			  <div th:if="${param.error}">
+			     <p class="text-danger">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
+			  </div>
+				
+				<div class="form-group">
+					<label for="uname">E-mail :</label>
+					<input type="text" class="form-control" id="uname" placeholder="E-mail" name="email" required>
+					<div class="valid-feedback">Valid.</div>
+					<div class="invalid-feedback">Please fill out this field.</div>
+				</div>
+				<div class="form-group">
+					<label for="pwd">Password:</label>
+					<input type="password" class="form-control" id="pwd" placeholder="Password" name="password"
+						required>
+					<div class="valid-feedback">Valid.</div>
+					<div class="invalid-feedback">Please fill out this field.</div>
+				</div>
+				<button type="submit" class="btn btn-primary">Login</button>
+			</form>
+			</div>
+
+	<footer class="my-3 text-center">
+		<p>Shopme Control Panel - Copyright &copy; Shope</p>
+	</footer>
+	
+		</div>
+	</div>
+
+</body>
+
+</html>

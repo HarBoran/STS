@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -7,8 +8,11 @@
 	<title>Home - Shopme Admin</title>
 
 	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/style.css}" />
 	<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
 	<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+	
 </head>
 
 <body>
@@ -57,12 +61,36 @@
 					<li class="nav-item">
 						<a class="nav-link" th:href="@{/settings}">Settings</a>
 					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/login}">
+							<span class="fa-solid fa-user fa-2x icon-silver" title="Enabled this user"/>
+						</a>
+					</li>
+					<li class="nav-item dropdown">
+				    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Dropdown</a>
+				    <div class="dropdown-menu">
+				      <a class="dropdown-item" href="#">Link 1</a>
+				      <a class="dropdown-item" href="#">Link 2</a>
+				      <a class="dropdown-item" href="#">Link 3</a>
+				    </div>
+				  </li>				
 				</ul>
 			</div>
 		</nav>
 	</div>
+	
+	<div sec:authentication="name"></div>
+	<div sec:authentication="principal"></div>
+	<div sec:authentication="principal.username"></div>
+	<hr>
+    <div sec:authentication="principal.firstname"></div>
+    <div sec:authentication="principal.lastname"></div>
+    <hr>
+    <div sec:authentication="principal.authorities"></div>
+ 
 
 
+ 
 	<div class="container">
 		<h1>Shopme Control Panel</h1>
 	</div>

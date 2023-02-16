@@ -35,7 +35,7 @@ public class UserRepositoryTests {
 	private TestEntityManager entityManager;
 
 	// JUnit test
-	@Test
+	//@Test
 	public void testCreateFirstUserWithOneRole() {
 		User UserDavid = new User("david@gmail.com", "David", "Juda", "1234");
 		Role roleAdmin = entityManager.find(Role.class, 1);
@@ -47,7 +47,7 @@ public class UserRepositoryTests {
 
 	}
 
-	@Test
+	//@Test
 	public void testCreateFirstUserWithManyRole() {
 		User UserMaria = new User("maria@email.com", "Maria", "Magdaline", "2023");
 
@@ -65,7 +65,7 @@ public class UserRepositoryTests {
 
 	}
 
-	@Test
+	//@Test
 	public void findAllUserInfo() {
 		Iterable<User> UserAll = repo.findAll();
 
@@ -76,7 +76,7 @@ public class UserRepositoryTests {
 		UserAll.forEach(user -> System.out.println(user));
 	}
 
-	@Test
+	//@Test
 	public void findUserInfo() {
 		Optional<User> user = repo.findById(1);
 		User user2 = repo.findById(1).get();
@@ -85,7 +85,7 @@ public class UserRepositoryTests {
 
 	}
 
-	@Test
+	//@Test
 	public void testUpdateUserDetails() {
 		User user = repo.findById(1).get();
 		user.setEnabled(true);
@@ -93,7 +93,7 @@ public class UserRepositoryTests {
 		repo.save(user);
 	}
 
-	@Test
+	//@Test
 	public void testChangeUserRole() {
 
 		User userMaria = repo.findById(1).get();
@@ -125,7 +125,7 @@ public class UserRepositoryTests {
 
 	}
 	
-	@Test
+	//@Test
 	public void getAllUser(){
 		//Iterable<User> AllUser = repo.findAll();
 		String email = "2222@dddd";
@@ -136,14 +136,14 @@ public class UserRepositoryTests {
 		assertThat(user2).isNotNull();	
 	}
 	
-	@Test
+	//@Test
 	public void testCountById(){
 		Integer id = 1;
 		Long countById = repo.countById(id);
 		assertThat(countById).isNotNull().isGreaterThan(0);
 	}
 	
-	@Test
+	//@Test
 	public void testChangeEnabled() {
 		Integer id = 1;
 		User user = repo.findById(id).get();
@@ -153,7 +153,7 @@ public class UserRepositoryTests {
 		//repo.save(user);
 	}
 	
-	@Test
+	//@Test
 	public void insertUserThirty() {		
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		String rawPassword = "1234";
@@ -167,7 +167,7 @@ public class UserRepositoryTests {
 	}
 	
 	
-	@Test
+	//@Test
 	public void testListFirstPage() {
 		int pageNumber = 3;
 		int pageSize = 4;

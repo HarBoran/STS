@@ -42,26 +42,43 @@ public class UserController {
 		return listByPage(1, theModel);
 	}
 	
-	
-
-	
 	@GetMapping("/{pageNum}")
 	public String listByPage(@PathVariable(name = "pageNum") int pageNum,Model theModel) {
 
 		Page<User> page = userservice.listByPage(pageNum);
-		System.out.println("-----------------");
-		
-//		Showing users # 5 to 8 of 15
-//		현재 페이지번호,  System.out.println(pageNum+1);
-//		각각 페이지별 보여질 내용의 수, System.out.println("getNumberOfElements :"+page.getNumberOfElements());
-//		페이지에 들어갈 컨텐츠, System.out.println("getNumber + 1 :"+page.getNumber()+1);
-//		전체 페이지 개수,  System.out.println("getTotalPages :"+page.getTotalPages());
-//		전체 데이터의 수 System.out.println("getTotalElements :"+page.getTotalElements());
-		
 		List<User> listUsers = page.getContent();
 		theModel.addAttribute("UserAll", listUsers);
-		List<Integer> pages = new ArrayList<Integer>(Arrays.asList(1,2,3));
-		theModel.addAttribute("pages", pages);
+		
+		long startCount = (pageNum - 1) * userservice.USERS_PER_PAGE + 1;
+		long endCount = startCount + userservice.USERS_PER_PAGE -1;
+		if (endCount > page.getTotalElements()) {
+			endCount= page.getTotalElements();
+		}				
+		
+		theModel.addAttribute("startCount", startCount);
+		theModel.addAttribute("endCount", endCount);
+		theModel.addAttribute("totalItems", page.getTotalElements());
+		theModel.addAttribute("currentPage", pageNum);
+		
+		
+		final long PartPage = 5; //보여줄 컨텐츠의 객수
+		long totalPage = page.getTotalPages();
+		
+		long endPartPage = (long) Math.ceil((double)pageNum /PartPage)*PartPage;
+		long startPartPage = endPartPage-PartPage+1;
+		if(endPartPage > totalPage) {
+			endPartPage = totalPage;
+		}
+		
+		theModel.addAttribute("startPartPage", startPartPage);
+		theModel.addAttribute("endPartPage", endPartPage);
+	
+		theModel.addAttribute("totalPages", page.getTotalPages());
+
+		//데이터 베이스가 비었을 떄를 가정해서
+		//theModel.addAttribute("UserAll", new ArrayList<User>());
+		//theModel.addAttribute("totalItems", 0);
+		
 		return "users";
 	}
 	

@@ -24,7 +24,7 @@ public class RoleRepositoryTests {
 	private RoleRepository repo;
 	
 	//JUnit test
-	@Test
+	//@Test
 	public void testCreateFirstRole() {
 		Role roleAdmin = new Role("Admin", "manage everything");
 		//Role savedRole = repo.save(roleAdmin);

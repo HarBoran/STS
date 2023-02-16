@@ -20,6 +20,7 @@ public class ShopeUserDetails implements UserDetails {
    public ShopeUserDetails(User user) {
       this.user = user;
    }
+   
    @Override
    public Collection<? extends GrantedAuthority> getAuthorities()
    {

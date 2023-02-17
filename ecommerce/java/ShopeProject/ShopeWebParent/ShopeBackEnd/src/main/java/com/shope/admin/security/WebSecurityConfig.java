@@ -41,13 +41,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
    @Override
    protected void configure(HttpSecurity http) throws Exception{
       http.authorizeRequests()
+      .antMatchers("/users/**").hasAuthority("Admin")
       .anyRequest().authenticated()
       .and()
       .formLogin()
-         .loginPage("/login")
-         .successForwardUrl("/users")
-         .usernameParameter("email")
-         .permitAll();
+	         .loginPage("/login")
+	         //.defaultSuccessUrl("/") // url로 보냄
+	         .successForwardUrl("/") // mapping으로 보냄
+	         .usernameParameter("email")
+	         .permitAll();
+      http.logout().permitAll();
    }
 	
    @Override

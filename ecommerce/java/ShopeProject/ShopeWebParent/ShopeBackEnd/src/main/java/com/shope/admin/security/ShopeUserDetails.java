@@ -57,6 +57,10 @@ public class ShopeUserDetails implements UserDetails {
    public boolean isEnabled() {      
       return user.isEnabled();
    }
+   
+   public String getFullname() {
+	   return user.getFirstname() + " " + user.getLastname();
+   }
  
 	public String getFirstname() {
 		return user.getFirstname();

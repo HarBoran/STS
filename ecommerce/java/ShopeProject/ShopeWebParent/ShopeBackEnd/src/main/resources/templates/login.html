@@ -17,19 +17,22 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <body>
 
 	<div class="container">
-		<a class="navbar-brand" th:href="@{/}">
-			<img th:src="@{/images/ShopeAdminSmall.png}" style="width:150px; height:150px;" />
-		</a>
-	</div>
-
-	<div class="container">
 		<div style="width: 400px; margin: 0 auto;">
+			
+			<div class="text-center">
+				<a class="navbar-brand" th:href="@{/}">
+					<img th:src="@{/images/ShopeAdminSmall.png}" style="width:150px; height:150px;" />
+				</a>
+			</div>
+			
 			<div class="border border-secondary rounded p-3">
 			<h2>Access to Control Panel</h2>
 			<form th:action="@{/login}" method="post" class="was-validated">
-				
 			  <div th:if="${param.error}">
 			     <p class="text-danger">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
+			  </div>
+			  <div th:if="${param.logout}">
+			     <p class="text-primary">You have been logged out.</p>
 			  </div>
 				
 				<div class="form-group">
@@ -49,9 +52,7 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 			</form>
 			</div>
 
-	<footer class="my-3 text-center">
-		<p>Shopme Control Panel - Copyright &copy; Shope</p>
-	</footer>
+	<div th:replace="fragments :: footer"/>
 	
 		</div>
 	</div>

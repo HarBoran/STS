@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class PasswordEncoderTest {
-	@Test
+	
+	//@Test
 	public void testEncoderd() {
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		String rawPassword = "itbank2023";

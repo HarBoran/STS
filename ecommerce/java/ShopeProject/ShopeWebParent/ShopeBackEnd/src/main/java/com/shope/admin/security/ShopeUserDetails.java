@@ -33,6 +33,7 @@ public class ShopeUserDetails implements UserDetails {
       }
       return authories;
    }
+   
    @Override
    public String getPassword() {      
       return user.getPassword();

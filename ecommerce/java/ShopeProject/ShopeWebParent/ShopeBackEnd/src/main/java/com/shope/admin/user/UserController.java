@@ -26,14 +26,14 @@ import com.shope.common.entity.Role;
 import com.shope.common.entity.User;
 
 @Controller
-@RequestMapping(value = "users", method = {RequestMethod.GET, RequestMethod.POST})
+@RequestMapping(value = "/users", method = {RequestMethod.GET, RequestMethod.POST})
 public class UserController {
 	
 	@Autowired
-	UserServcie userservice;
+	UserService userservice;
 	
 	@Autowired
-	RoleServcie roleservice; 
+	RoleService roleservice; 
 	
 	@GetMapping({"", "/"})
 	public String listAll(Model theModel) {

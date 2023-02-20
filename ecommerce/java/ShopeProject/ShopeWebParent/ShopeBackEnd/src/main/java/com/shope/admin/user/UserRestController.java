@@ -19,7 +19,7 @@ import com.shope.common.entity.User;
 public class UserRestController {
 	
 	@Autowired
-	private UserServcie userservice;
+	private UserService userservice;
 	
 	@PostMapping("/check_email")
 	public String checkDuplicateEmail(@Param("id") Integer id, @Param("email") String email) {

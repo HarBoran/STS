@@ -9,7 +9,7 @@ import com.shope.common.entity.Role;
 import com.shope.common.entity.User;
 
 @Service
-public class RoleServcie {
+public class RoleService {
 	
 	@Autowired
 	private RoleRepository roleRepo;

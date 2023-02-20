@@ -12,11 +12,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.shope.common.entity.Category;
 import com.shope.common.entity.User;
 
 @Service
 @Transactional
-public class UserServcie {
+public class UserService {
 	public static final int USERS_PER_PAGE = 4;
 	
 	@Autowired
@@ -101,6 +102,8 @@ public class UserServcie {
 		Pageable pageable = PageRequest.of(pageNum-1, USERS_PER_PAGE);
 		return userRepo.findAll(pageable);
 	}
+
+
 
 }
 

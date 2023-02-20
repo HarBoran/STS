@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.shope.admin.user.UserServcie;
+import com.shope.admin.user.UserService;
 
 @Controller
 public class MainController {
 	
 	@Autowired
-	UserServcie userservice;
+	UserService userservice;
 	
 	@RequestMapping(value = {""}, method = {RequestMethod.GET, RequestMethod.POST})
 	public String viewHomePage() {

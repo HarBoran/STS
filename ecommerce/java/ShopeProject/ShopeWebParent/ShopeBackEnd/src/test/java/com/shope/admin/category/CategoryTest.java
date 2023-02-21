@@ -23,7 +23,7 @@ public class CategoryTest {
 	@Autowired
 	private CategoryRepository repo;
 
-	// @Test
+	@Test
 	public void testCreateCategory() {
 
 		Category CategoryComputer = new Category("Computers");
@@ -69,17 +69,20 @@ public class CategoryTest {
 			System.out.println("--" + subCategory.getName());
 		}
 	}
+/*	Computers
+	--Desktops
+	--Computer Components
+	--Laptops */
 	
 	
 	@Test
 	public void testPrintHierarchicalCategories() {		
 		Iterable<Category> AllCategory= repo.findAll();
-		
+
 		for(Category category : AllCategory) {
 			if(category.getParent() == null) {
 				System.out.println(category.getName());				
 				Set<Category> childern = category.getChildren();
-				
 				for (Category subCategory : childern) {
 					System.out.println("--" + subCategory.getName());
 					printChildren(subCategory, 1);
@@ -96,8 +99,7 @@ public class CategoryTest {
 			for(int i = 0; i <newSubLevel; i++) {
 				System.out.print("--");
 			}
-			System.out.println(subCategory.getName());		
-		
+			System.out.println(subCategory.getName());
 			printChildren(subCategory, newSubLevel);
 		}
 	}

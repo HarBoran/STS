@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="category")
@@ -55,7 +56,7 @@ public class Category {
 		this(name);
 		this.parent = parent;
 	}
-	
+		
 	@Override
 	public String toString() {
 		return "Category [id=" + id + ", name=" + name + ", alias=" + alias + ", image=" + image + ", enabled="

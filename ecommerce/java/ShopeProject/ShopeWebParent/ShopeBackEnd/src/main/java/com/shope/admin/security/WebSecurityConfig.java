@@ -36,19 +36,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //	@Override
 //	protected void configure(HttpSecurity http) throws Exception{
 //		http.authorizeRequests().anyRequest().permitAll();
-//	}c
+//	}
    
    @Override
    protected void configure(HttpSecurity http) throws Exception{
       http.authorizeRequests()
       //.antMatchers("/").permitAll()
       .antMatchers("/users/**").hasAuthority("Admin")
+      .antMatchers("/categories/**").hasAnyAuthority("Admin","Editor")
       .anyRequest().authenticated()
       .and()
       .formLogin()
 	         .loginPage("/login")
 	         //.defaultSuccessUrl("/") // url로 보냄
-	         .successForwardUrl("/") // mapping으로 보냄
+	         .successForwardUrl("/categories") // mapping으로 보냄
 	         .usernameParameter("email")
 	         .permitAll();
       http.logout().permitAll();

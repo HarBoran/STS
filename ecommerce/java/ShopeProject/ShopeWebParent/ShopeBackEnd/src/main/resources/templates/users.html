@@ -113,7 +113,7 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 					<td>[[${user.id}]]</td>
 					<td><span th:if = "${user.photos == null}" class="fas fa-portrait fa-6x icon-silver"></span>
 						<img th:if = "${user.photos != null}" th:src="@{${user.photosImagePath}}" style="width: 100px;"/>
-						</td>
+					</td>
 					<td>[[${user.email}]]</td>
 					<td>[[${user.firstname}]]</td>
 					<td>[[${user.lastname}]]</td>

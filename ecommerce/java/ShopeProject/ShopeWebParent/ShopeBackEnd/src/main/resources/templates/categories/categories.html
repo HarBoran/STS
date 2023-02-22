@@ -49,7 +49,7 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 			<tbdoy>
 				<tr th:each="category : ${categoryAll}">
 					<td>[[${category.id}]]</td>
-					<td>[[${category.image}]]</td>
+					<td><img th:src="@{${category.imagePath}}" style="width:100px;" class="img-fluid" tilte="${category.image}"></td>
 					<td>[[${category.name}]]</td>
 					<td>[[${category.alias}]]</td>
 					<td>

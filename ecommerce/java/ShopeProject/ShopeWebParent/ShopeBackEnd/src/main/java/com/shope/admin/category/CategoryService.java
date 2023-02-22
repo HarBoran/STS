@@ -15,8 +15,6 @@ import com.shope.common.entity.Category;
 @Transactional
 public class CategoryService {
 	
-	
-	
 	@Autowired
 	private CategoryRepository repo;
 
@@ -34,8 +32,8 @@ public class CategoryService {
 			if(category.getParent() == null) {
 				//System.out.println(category.getName());	
 				//categoriesUsedInForm.add(category);
-				categoriesUsedInForm.add(new Category(category.getName()));
-				
+				//categoriesUsedInForm.add(new Category(category.getName()));
+				categoriesUsedInForm.add(Category.copyIdAndName(category));
 				Set<Category> childern = category.getChildren();
 				
 				for (Category subCategory : childern) {
@@ -47,22 +45,21 @@ public class CategoryService {
 			//		subCategory.setName("--" + subCategory.getName());
 			//		categoriesUsedInForm.add(subCategory);	
 					String name = "--" + subCategory.getName();
-					categoriesUsedInForm.add(new Category(name));	
-					
-					//printChildren(subCategory, 1);
-					categoriesUsedInForm.addAll(printChildren(subCategory, 1));
-//					for(Category c : (printChildren(subCategory, 1))){
-//						H.add(c);
-//					}							
+					Integer id = subCategory.getId();
+					Category parent = subCategory.getParent();
+					//categoriesUsedInForm.add(new Category(name));
+					categoriesUsedInForm.add(Category.copyIdAndName(id, name));
+						//printChildren(subCategory, 1);
+//					categoriesUsedInForm.addAll(printChildren(subCategory, 1));
+					listChildren(categoriesUsedInForm, subCategory, 1);
+						
 				}
 			}
 		}
 		return categoriesUsedInForm;
 	}
 
-	private List<Category> printChildren(Category parent, int subLevel) {
-		List<Category> H = new ArrayList<Category>();
-		
+	private List<Category> listChildren(List<Category>categoriesUsedInForm, Category parent, int subLevel) {
 		int newSubLevel = subLevel + 1;
 		Set<Category> children = parent.getChildren();
 		
@@ -74,19 +71,18 @@ public class CategoryService {
 			}
 			//System.out.println(subCategory.getName());
 			name += subCategory.getName();
-			H.add(new Category(name));	
-		
-//			subCategory.setName(name + subCategory.getName());
+			Integer id = subCategory.getId();
+			//H.add(new Category(name));	
 //			H.add(subCategory);
-//			printChildren(subCategory, newSubLevel);
+//			subCategory.setName(name + subCategory.getName());
+			categoriesUsedInForm.add(Category.copyIdAndName(id, name));
+			listChildren(categoriesUsedInForm, subCategory, newSubLevel);
 		}
-		return H;
+		return categoriesUsedInForm;
 	}
 
-
-	public void saveCategory(Category newCategory) {
-		repo.save(newCategory);
+	public Category saveCategory(Category newCategory) {
+		return repo.save(newCategory);
 	}
-	
 	
 }

@@ -4,6 +4,8 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head th:replace="fragments :: page_head('Categories - Shope Admin')"/>
 
+
+
 <body>
 	<div th:replace="navigation :: menu"/>
 		
@@ -61,16 +63,17 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 						th:href="@{'/categories' + ${category.id} + '/enabled/true'}"
 						title="Enabled this category"/></a>
 					</td>
-					<td>
+					<td><div "class = row">
+						&nbsp;&nbsp;
 						<a class="fas fa-edit fa-2x icon-orange" 
-						th:href="@{'/categories/edite' + ${category.id}}"
+						th:href="@{'/categories/edite/' + ${category.id}}"
 						title="Edite category"></a>
   						&nbsp;&nbsp;
   						<a class="fas fa-trash fa-2x icon-green link-delete"
-  						th:href = "@{'/categories/delete' + ${category.id}}"
+  						th:href = "@{'/categories/delete/' + ${category.id}}"
   						th:catId = "${category.id}"
   						title="Delete this category"></a>
-					</td>
+					</div></td>
 				</tr>	
 			</tbdoy>	
 		</table>

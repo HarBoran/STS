@@ -2,6 +2,8 @@ package com.shope.admin.category;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.shope.common.entity.Category;
+import com.shope.common.entity.User;
 
 @Service
 @Transactional
@@ -45,10 +48,9 @@ public class CategoryService {
 			//		subCategory.setName("--" + subCategory.getName());
 			//		categoriesUsedInForm.add(subCategory);	
 					String name = "--" + subCategory.getName();
-					Integer id = subCategory.getId();
 					Category parent = subCategory.getParent();
 					//categoriesUsedInForm.add(new Category(name));
-					categoriesUsedInForm.add(Category.copyIdAndName(id, name));
+					categoriesUsedInForm.add(Category.copyIdAndName(subCategory, name));
 						//printChildren(subCategory, 1);
 //					categoriesUsedInForm.addAll(printChildren(subCategory, 1));
 					listChildren(categoriesUsedInForm, subCategory, 1);
@@ -71,11 +73,10 @@ public class CategoryService {
 			}
 			//System.out.println(subCategory.getName());
 			name += subCategory.getName();
-			Integer id = subCategory.getId();
 			//H.add(new Category(name));	
 //			H.add(subCategory);
 //			subCategory.setName(name + subCategory.getName());
-			categoriesUsedInForm.add(Category.copyIdAndName(id, name));
+			categoriesUsedInForm.add(Category.copyIdAndName(subCategory, name));
 			listChildren(categoriesUsedInForm, subCategory, newSubLevel);
 		}
 		return categoriesUsedInForm;
@@ -84,5 +85,49 @@ public class CategoryService {
 	public Category saveCategory(Category newCategory) {
 		return repo.save(newCategory);
 	}
+
+
+	public Category findById(Integer id) throws CategoryNotFoundException{
+		try {
+			return repo.findById(id).get();
+		}catch(NoSuchElementException ex) {
+			throw new CategoryNotFoundException("Could not find any category with Id" + id);
+		}
+	}
+
+	public boolean isNameUnique(Integer id, String name) {
+		Category categoryByName = repo.getCategoryByName(name);
+		if(categoryByName == null) return true;
+		
+		boolean isCreatingNew = (id == null);
+		
+		if(isCreatingNew) {
+			if(categoryByName != null) return false;
+		}else {
+			if(categoryByName.getId() != id) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+
+	public boolean isAliasUnique(Integer id, String alias) {
+		Category categoryByAlias = repo.getCategoryByAlias(alias);
+		if(categoryByAlias == null) return true;
+		
+		boolean isCreatingNew = (id == null);
+		
+		if(isCreatingNew) {
+			if(categoryByAlias != null) return false;
+		}else {
+			if(categoryByAlias.getId() != id) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	
 	
 }

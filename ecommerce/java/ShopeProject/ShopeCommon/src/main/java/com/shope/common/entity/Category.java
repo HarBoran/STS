@@ -35,7 +35,8 @@ public class Category {
 	
 	 @Transient
 	 public String getImagePath() {
-	    if(id==null || image ==null || image.equals("")) return "/images/image-thumbnail.png";
+		if(this.id==null || image ==null || image.equals("")) return "/images/image-thumbnail.png";
+	    //if(this.id==null) return "/images/image-thumbnail.png";
 	    return "/category-images/" + this.id +"/"+this.image;
      }
 
@@ -62,11 +63,17 @@ public class Category {
 		this(name);
 		this.parent = parent;
 	}
-		
+	
+	public Category(Integer id, String name, String alias) {
+		this.id = id;
+		this.name = name;
+		this.alias = alias;
+	}
+
 	@Override
 	public String toString() {
 		return "Category [id=" + id + ", name=" + name + ", alias=" + alias + ", image=" + image + ", enabled="
-				+ enabled + ", parent=" + parent + "]";
+				+ enabled + /*", parent=" + parent + */"]";
 	}
 
 	public Integer getId() {
@@ -129,13 +136,19 @@ public class Category {
 		Category copyCategory= new Category();
 		copyCategory.setId(category.getId());
 		copyCategory.setName(category.getName());
+		copyCategory.setImage(category.getImage());
+		copyCategory.setAlias(category.getAlias());
+		copyCategory.setEnabled(category.isEnabled());
 		return copyCategory;
 	}
 
-	public static Category copyIdAndName(Integer id, String name) {
+	public static Category copyIdAndName(Category category, String name) {
 		Category copyCategory= new Category();
-		copyCategory.setId(id);
+		copyCategory.setId(category.getId());
 		copyCategory.setName(name);
+		copyCategory.setImage(category.getImage());
+		copyCategory.setAlias(category.getAlias());
+		copyCategory.setEnabled(category.isEnabled());
 		return copyCategory;
 	}
 	

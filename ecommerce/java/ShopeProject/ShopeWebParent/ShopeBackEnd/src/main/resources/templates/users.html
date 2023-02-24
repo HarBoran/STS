@@ -36,8 +36,20 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 						showModalDialog("Error", "Unkown response from server");
 					}
 				})
-		
+				
+		function clearFilter(){
+			//location.href = "[[@{/users}]]";
+			window.location = "[[@{/users}]]";
+		}	
 	</script>
+	
+	<style>
+		.pagination > li > a {
+			float: none;
+			margin-left: 5px;
+		}
+		
+	</style>
 	
 </head>
 
@@ -48,6 +60,25 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 	<div class="container fluid">
 		<h2>Manage Users</h2>
 		<a th:href="@{/users/new}" class = "btn btn-sm mb-3" style = "background-color: darkorange">Create New User</a>
+		
+		<div>
+		 <form th:action="@{'/users/1'}" class="form-inline m-3">
+		    
+		    <input type="hidden" name="sortField" th:value="${sortField}" class="form-control" />
+		    <input type="hidden" name="sortDir" th:value="${sortDir}" class="form-control" />
+		    Filter:&nbsp;
+		    <input type="search" name="keyword" th:value="${keyword}" class="form-control" required/>
+		    &nbsp;&nbsp;
+		    <button type="submit" class="btn btn-primary">
+		       <i class="fas fa-search"></i>
+		    </button>
+			&nbsp;&nbsp;
+		     <button type="button" class="btn btn-secondary" onclick="clearFilter()">
+		       <i class="fas fa-eraser"></i>
+		    </button>
+		 </form>
+		</div>
+		
 		<div th:if = "${message != null}" class="alert alert-success text-center">
 			[[${message}]]
 		</div>
@@ -64,28 +95,29 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 			[[${messageDelete}]]
 		</div>
 		
-
+		<div th:if = "${totalPages > 1}">
 		<nav>
 		<ul class="pagination justify-content-center pagination-xs">
 			<li th:class="${currentPage != 1 ? 'page-item active' : 'page-item disabled'}">
-				<a class="page-link" th:href="@{/users/1}">First</a>
+				<a class="page-link" th:href="@{/users/1(sortField=${sortField}, sortDir=${sortDir}, keyword=${keyword})}">&laquo;First</a>
 			</li>
 			<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-				<a class="page-link" th:href="@{'/users/' + ${currentPage-1}}">Previous</a>
+				<a class="page-link" th:href="@{'/users/' + ${currentPage-1}(sortField=${sortField}, sortDir=${sortDir}, keyword=${keyword})}">Previous</a>
 			</li>	  
 			<li th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
 				 th:each = "i : ${#numbers.sequence(startPartPage,endPartPage)}">
 				<!--<a class="page-link" th:href="@{/users/{i}(i=${i})}" th:text = "${i}"></a>-->
-				<a class="page-link" th:href="@{'/users/'+${i}}">[[${i}]]</a>
+				<a class="page-link" th:href="@{'/users/'+${i}(sortField=${sortField}, sortDir=${sortDir}, keyword=${keyword})}">[[${i}]]</a>
 			</li>
 			<li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-				<a class="page-link" th:href="@{'/users/' + ${currentPage+1}}">Next</a>
+				<a class="page-link" th:href="@{'/users/' + ${currentPage+1}(sortField=${sortField}, sortDir=${sortDir}, keyword=${keyword})}">Next</a>
 			</li>
 			<li th:class="${currentPage != totalPages ? 'page-item active' : 'page-item disabled'}">
-				<a class="page-link" th:href="@{'/users/' + ${totalPages}}">Last</a>
+				<a class="page-link" th:href="@{'/users/' + ${totalPages}(sortField=${sortField}, sortDir=${sortDir}, keyword=${keyword})}">Last&raquo;</a>
 			</li>
 		</ul>
 		</nav>
+		</div>
 		
 		<div class="text-center m-1" th:if = "${totalItems > 0}">
 			<span>Showing users # [[${startCount}]] to [[${endCount}]] of [[${totalItems}]]</span>
@@ -97,13 +129,69 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 		<table class="table table-bordered table-striped table-hover table-responsive-xl">
 			<thead class="thead-dark">
 				<tr>
-					<th>User ID</th>
+					<th><a th:if="${sortField != 'id'}" class = "text-white"
+							th:href="@{'/users/' + ${currentPage}(sortField=id, sortDir=${sortDir})}">
+							User ID
+						</a>
+						<a th:if="${sortField == 'id'}" class = "text-white"
+							th:href="@{'/users/' + ${currentPage}(sortField=id, sortDir=${reverseSortDir})}">
+							User ID
+						</a>
+						<span th:if="${sortField == 'id'}"
+							 th:class = "${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"
+							 th:utext = "${sortDir == 'asc' ? '<sup>▲</sup>' : '<sub>▼</sub>'}">
+						</span>					
+					</th>
 					<th>Photos</th>
-					<th>E-mail</th>
-					<th>First Name</th>	
-					<th>Last Name</th>
+					<th><a th:if="${sortField != 'email'}" class = "text-white"
+							th:href="@{'/users/' + ${currentPage}(sortField=email, sortDir=${sortDir})}">
+							E-mail
+						</a>
+						<a th:if="${sortField == 'email'}" class = "text-white"
+							th:href="@{'/users/' + ${currentPage}(sortField=email, sortDir=${reverseSortDir})}">
+							E-mail
+						</a>
+						<span th:if="${sortField == 'email'}"
+							 th:class = "${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
+						</span>					
+					</th>
+					<th><a th:if="${sortField != 'firstname'}" class = "text-white"
+							th:href="@{'/users/' + ${currentPage}(sortField=firstname, sortDir=${sortDir})}">
+							First Name
+						</a>
+						<a th:if="${sortField == 'firstname'}" class = "text-white"
+							th:href="@{'/users/' + ${currentPage}(sortField=firstname, sortDir=${reverseSortDir})}">
+							First Name
+						</a>
+						<span th:if="${sortField == 'firstname'}"
+							 th:class = "${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
+						</span>					
+					</th>
+					<th><a th:if="${sortField != 'lastname'}" class = "text-white"
+							th:href="@{'/users/' + ${currentPage}(sortField=lastname, sortDir=${sortDir})}">
+							Last Name
+						</a>
+						<a th:if="${sortField == 'lastname'}" class = "text-white"
+							th:href="@{'/users/' + ${currentPage}(sortField=lastname, sortDir=${reverseSortDir})}">
+							Last Name
+						</a>
+						<span th:if="${sortField == 'lastname'}"
+							 th:class = "${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
+						</span>					
+					</th>
 					<th>Roles</th>
-					<th>Enabled</th>
+					<th><a th:if="${sortField != 'enabled'}" class = "text-white"
+							th:href="@{'/users/' + ${currentPage}(sortField=enabled, sortDir=${sortDir})}">
+							Enabled
+						</a>
+						<a th:if="${sortField == 'enabled'}" class = "text-white"
+							th:href="@{'/users/' + ${currentPage}(sortField=enabled, sortDir=${reverseSortDir})}">
+							Enabled
+						</a>
+						<span th:if="${sortField == 'enabled'}"
+							 th:class = "${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
+						</span>					
+					</th>
 					<th>Edite Form</th>
 					<th>Edite A href</th>
 				</tr>

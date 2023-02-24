@@ -40,7 +40,7 @@ public class Category {
 	    return "/category-images/" + this.id +"/"+this.image;
      }
 
-	@OneToOne
+	@OneToOne()
 	@JoinColumn(name="parent_id")
 	private Category parent;
 
@@ -132,7 +132,7 @@ public class Category {
 		this.children = children;
 	}
 
-	public static Category copyIdAndName(Category category) {	
+	public static Category copyFull(Category category) {	
 		Category copyCategory= new Category();
 		copyCategory.setId(category.getId());
 		copyCategory.setName(category.getName());
@@ -142,13 +142,9 @@ public class Category {
 		return copyCategory;
 	}
 
-	public static Category copyIdAndName(Category category, String name) {
-		Category copyCategory= new Category();
-		copyCategory.setId(category.getId());
+	public static Category copyFull(Category category, String name) {
+		Category copyCategory= Category.copyFull(category);
 		copyCategory.setName(name);
-		copyCategory.setImage(category.getImage());
-		copyCategory.setAlias(category.getAlias());
-		copyCategory.setEnabled(category.isEnabled());
 		return copyCategory;
 	}
 	

@@ -1,8 +1,8 @@
 package com.shope.admin.category;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -110,6 +110,12 @@ public class CategoryTest {
 		Category category = repo.findByName(name);
 		assertThat(category).isNotNull();
 		assertThat(category.getName()).isEqualTo(name);
+	}
+	
+	@Test
+	public void testListRootCategories() {
+		List<Category> rootCategories = repo.findRootCategories();
+		rootCategories.forEach(cat->System.out.println(cat.getName()));
 	}
 	
 }

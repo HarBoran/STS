@@ -22,10 +22,41 @@ public class CategoryService {
 	private CategoryRepository repo;
 
 	public List<Category> findAll() {
-		return (List<Category>) repo.findAll();
+//		return (List<Category>) repo.findAll();
+		List<Category> rootCategories = repo.findRootCategories();
+		return listHierarchicalCategories(rootCategories);
+	}
+	
+	public List<Category> listHierarchicalCategories(List<Category> rootCategories) {			
+		List<Category> hierarchicalCategories = new ArrayList<Category>(); 
+
+		for(Category category : rootCategories) {
+				//System.out.println(category.getName());	
+				//categoriesUsedInForm.add(category);
+				//categoriesUsedInForm.add(new Category(category.getName()));
+				hierarchicalCategories.add(Category.copyFull(category));
+				Set<Category> childern = category.getChildren();
+				
+				for (Category subCategory : childern) {
+					//System.out.println("--" + subCategory.getName());
+//					Category c = new Category();
+//					c = subCategory;
+//					c.setName("--" + subCategory.getName());
+//					H.add(c);	
+			//		subCategory.setName("--" + subCategory.getName());
+			//		categoriesUsedInForm.add(subCategory);	
+					String name = "--" + subCategory.getName();
+					//categoriesUsedInForm.add(new Category(name));
+					hierarchicalCategories.add(Category.copyFull(subCategory, name));
+						//printChildren(subCategory, 1);
+//					categoriesUsedInForm.addAll(printChildren(subCategory, 1));
+					listSubHierarchicalCatrgories(hierarchicalCategories, subCategory, 1);
+				
+			}
+		}
+		return hierarchicalCategories;
 	}
 
-	
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public List<Category> hierarchicalCategories() {		
 		Iterable<Category> AllCategory= repo.findAll();		
@@ -36,7 +67,7 @@ public class CategoryService {
 				//System.out.println(category.getName());	
 				//categoriesUsedInForm.add(category);
 				//categoriesUsedInForm.add(new Category(category.getName()));
-				categoriesUsedInForm.add(Category.copyIdAndName(category));
+				categoriesUsedInForm.add(Category.copyFull(category));
 				Set<Category> childern = category.getChildren();
 				
 				for (Category subCategory : childern) {
@@ -50,18 +81,18 @@ public class CategoryService {
 					String name = "--" + subCategory.getName();
 					Category parent = subCategory.getParent();
 					//categoriesUsedInForm.add(new Category(name));
-					categoriesUsedInForm.add(Category.copyIdAndName(subCategory, name));
+					categoriesUsedInForm.add(Category.copyFull(subCategory, name));
 						//printChildren(subCategory, 1);
 //					categoriesUsedInForm.addAll(printChildren(subCategory, 1));
-					listChildren(categoriesUsedInForm, subCategory, 1);
+					listSubHierarchicalCatrgories(categoriesUsedInForm, subCategory, 1);
 						
 				}
 			}
 		}
 		return categoriesUsedInForm;
 	}
-
-	private List<Category> listChildren(List<Category>categoriesUsedInForm, Category parent, int subLevel) {
+	
+	private List<Category> listSubHierarchicalCatrgories(List<Category>categoriesUsedInForm, Category parent, int subLevel) {
 		int newSubLevel = subLevel + 1;
 		Set<Category> children = parent.getChildren();
 		
@@ -76,11 +107,13 @@ public class CategoryService {
 			//H.add(new Category(name));	
 //			H.add(subCategory);
 //			subCategory.setName(name + subCategory.getName());
-			categoriesUsedInForm.add(Category.copyIdAndName(subCategory, name));
-			listChildren(categoriesUsedInForm, subCategory, newSubLevel);
+			categoriesUsedInForm.add(Category.copyFull(subCategory, name));
+			listSubHierarchicalCatrgories(categoriesUsedInForm, subCategory, newSubLevel);
 		}
 		return categoriesUsedInForm;
 	}
+
+	
 
 	public Category saveCategory(Category newCategory) {
 		return repo.save(newCategory);

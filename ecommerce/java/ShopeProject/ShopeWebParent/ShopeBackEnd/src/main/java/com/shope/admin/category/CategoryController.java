@@ -32,8 +32,8 @@ public class CategoryController {
 
 	@GetMapping({ "", "/" })
 	public String listAll(Model theModel) {
-		//List<Category> categoryAll = service.findAll();
-		List<Category> categoryAll = service.hierarchicalCategories();
+		List<Category> categoryAll = service.findAll();
+		//List<Category> categoryAll = service.hierarchicalCategories();
 		theModel.addAttribute("categoryAll", categoryAll);
 		return "categories/categories";
 	}

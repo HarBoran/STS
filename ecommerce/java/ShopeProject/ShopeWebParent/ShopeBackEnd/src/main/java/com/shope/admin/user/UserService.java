@@ -7,12 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.shope.common.entity.Category;
 import com.shope.common.entity.User;
 
 @Service
@@ -28,6 +27,16 @@ public class UserService {
 	
 	public List<User> listAll() {
 		return  (List<User>) userRepo.findAll();
+	}
+	
+	public Page<User> listByPage(int pageNum, String sortField, String sortDir, String keyword) {
+		Sort sort =Sort.by(sortField);
+		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
+		Pageable pageable = PageRequest.of(pageNum-1, USERS_PER_PAGE, sort);
+		if(keyword != null) {
+			return userRepo.findAll(keyword, pageable);
+		}
+		return userRepo.findAll(pageable);
 	}
 	
 	private void encodePassword(User user) {
@@ -97,13 +106,6 @@ public class UserService {
 	public void updateEndabled(Integer id, Boolean enabled) {
 		userRepo.updateEndabled(id, enabled);
 	}
-
-	public Page<User> listByPage(int pageNum) {
-		Pageable pageable = PageRequest.of(pageNum-1, USERS_PER_PAGE);
-		return userRepo.findAll(pageable);
-	}
-
-
 
 }
 

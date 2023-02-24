@@ -65,7 +65,7 @@ public class UserRepositoryTests {
 
 	}
 
-	//@Test
+	@Test
 	public void findAllUserInfo() {
 		Iterable<User> UserAll = repo.findAll();
 
@@ -136,7 +136,7 @@ public class UserRepositoryTests {
 		assertThat(user2).isNotNull();	
 	}
 	
-	//@Test
+	@Test
 	public void testCountById(){
 		Integer id = 1;
 		Long countById = repo.countById(id);
@@ -167,7 +167,7 @@ public class UserRepositoryTests {
 	}
 	
 	
-	//@Test
+	@Test
 	public void testListFirstPage() {
 		int pageNumber = 3;
 		int pageSize = 4;
@@ -182,5 +182,21 @@ public class UserRepositoryTests {
 		
 		assertThat(listUsers.size()).isEqualTo(pageSize);
 		}
-
+	
+	
+	@Test
+	public void testSearchUsers() {
+		String keyword = "D";
+		
+		int pageNumber = 0;
+		int pageSize = 4;
+		
+		Pageable pageable = PageRequest.of(pageNumber, pageSize);
+		Page<User> page = repo.findAll(keyword, pageable);		
+		List<User> listUsers = page.getContent();
+		
+		listUsers.forEach(user -> System.out.println(user));
+		
+		assertThat(listUsers.size()).isGreaterThan(0);
+	}
 }

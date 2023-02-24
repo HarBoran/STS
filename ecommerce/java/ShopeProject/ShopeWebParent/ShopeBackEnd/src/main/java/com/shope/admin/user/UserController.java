@@ -1,12 +1,12 @@
 package com.shope.admin.user;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 
 import com.shope.admin.FileUploadUtil;
 import com.shope.common.entity.Role;
@@ -39,13 +38,15 @@ public class UserController {
 	public String listAll(Model theModel) {
 //		List<User> UserAll = userservice.listAll();
 //		theModel.addAttribute("UserAll", UserAll);
-		return listByPage(1, theModel);
+		return listByPage(1, "id", "asc", null, theModel);
 	}
 	
 	@GetMapping("/{pageNum}")
-	public String listByPage(@PathVariable(name = "pageNum") int pageNum,Model theModel) {
+	public String listByPage(@PathVariable(name = "pageNum") int pageNum, @Param("sortField")String sortField, @Param("sortDir")String sortDir, @Param("keyword")String keyword,  Model theModel) {
+		Date time = new Date();
+		System.out.println("+__________+ " + time);
 
-		Page<User> page = userservice.listByPage(pageNum);
+		Page<User> page = userservice.listByPage(pageNum, sortField, sortDir, keyword);
 		List<User> listUsers = page.getContent();
 		theModel.addAttribute("UserAll", listUsers);
 		
@@ -53,13 +54,18 @@ public class UserController {
 		long endCount = startCount + userservice.USERS_PER_PAGE -1;
 		if (endCount > page.getTotalElements()) {
 			endCount= page.getTotalElements();
-		}				
+		}
 		
+		String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc"; 
+		theModel.addAttribute("currentPage", pageNum);
 		theModel.addAttribute("startCount", startCount);
 		theModel.addAttribute("endCount", endCount);
 		theModel.addAttribute("totalItems", page.getTotalElements());
-		theModel.addAttribute("currentPage", pageNum);
 		
+		theModel.addAttribute("sortField", sortField);
+		theModel.addAttribute("sortDir", sortDir);		
+		theModel.addAttribute("reverseSortDir", reverseSortDir);
+		theModel.addAttribute("keyword", keyword);
 		
 		final long PartPage = 5; //보여줄 컨텐츠의 객수
 		long totalPage = page.getTotalPages();

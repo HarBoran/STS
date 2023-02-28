@@ -40,7 +40,7 @@ public class Category {
 	    return "/category-images/" + this.id +"/"+this.image;
      }
 
-	@OneToOne()
+	@OneToOne
 	@JoinColumn(name="parent_id")
 	private Category parent;
 
